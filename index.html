@@ -129,6 +129,14 @@
             color: var(--accent-blue);
         }
         
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        
         .nav-section {
             padding: 1.25rem 1rem 0.5rem;
             font-size: 0.7rem;
@@ -1318,18 +1326,18 @@
         
         <ul class="sidebar-nav">
             <li class="nav-item">
-                <a href="#" class="nav-link active">
+                <a href="#" class="nav-link active" data-section="dashboard">
                     <i class="bi bi-grid-1x2"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" data-section="activity">
                     <i class="bi bi-activity"></i> Activity
                     <span class="notif-badge">12</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" data-section="analytics">
                     <i class="bi bi-bar-chart-line"></i> Analytics
                 </a>
             </li>
@@ -1338,25 +1346,25 @@
         <div class="nav-section">Businesses</div>
         <ul class="sidebar-nav">
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" data-section="conduit">
                     <i class="bi bi-envelope"></i> Conduit
                     <span class="health-dot health-yellow"></span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" data-section="tradecraft">
                     <i class="bi bi-graph-up-arrow"></i> TradeCraft
                     <span class="health-dot health-blue"></span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" data-section="liftedpick">
                     <i class="bi bi-upc-scan"></i> LiftedPick
                     <span class="health-dot health-green"></span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" data-section="cannacart">
                     <i class="bi bi-cart3"></i> CannaCart
                     <span class="health-dot health-green"></span>
                 </a>
@@ -1385,13 +1393,13 @@
         <div class="nav-section mt-auto">System</div>
         <ul class="sidebar-nav">
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" data-section="notifications">
                     <i class="bi bi-bell"></i> Notifications
                     <span class="notif-badge">3</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="#" class="nav-link" data-section="settings">
                     <i class="bi bi-gear"></i> Settings
                 </a>
             </li>
@@ -1423,6 +1431,9 @@
                 </button>
             </div>
         </div>
+        
+        <!-- Dashboard Section -->
+        <div id="section-dashboard" class="content-section active">
         
         <!-- Quick Stats Bar -->
         <div class="quick-stats">
@@ -1791,6 +1802,206 @@
                 </div>
             </div>
         </div>
+        </div><!-- /section-dashboard -->
+        
+        <!-- Activity Section -->
+        <div id="section-activity" class="content-section">
+            <div class="section-header mb-4">
+                <h4><i class="bi bi-activity me-2"></i>Activity Feed</h4>
+            </div>
+            <div class="card" style="background: var(--bg-secondary); border-color: var(--border-color);">
+                <div class="card-body">
+                    <p class="text-secondary mb-0"><i class="bi bi-clock-history me-2"></i>Full activity history coming soon. Check the dashboard for recent activity.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics Section -->
+        <div id="section-analytics" class="content-section">
+            <div class="section-header mb-4">
+                <h4><i class="bi bi-bar-chart-line me-2"></i>Analytics</h4>
+            </div>
+            <div class="card" style="background: var(--bg-secondary); border-color: var(--border-color);">
+                <div class="card-body">
+                    <p class="text-secondary mb-0"><i class="bi bi-graph-up me-2"></i>Analytics dashboard coming soon. Track revenue, leads, and performance across all businesses.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Conduit Section -->
+        <div id="section-conduit" class="content-section">
+            <div class="section-header mb-4">
+                <h4><i class="bi bi-envelope me-2" style="color: var(--accent-blue);"></i>Conduit</h4>
+                <span class="badge" style="background: var(--accent-yellow);">Setup Phase</span>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Leads Built</div>
+                        <div class="stat-value">100</div>
+                        <div class="stat-change text-success">✓ Complete</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Email Warmup</div>
+                        <div class="stat-value">~17 days</div>
+                        <div class="stat-change text-warning">In progress</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Sequences Ready</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-change text-success">✓ Built</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-4" style="background: var(--bg-secondary); border-color: var(--border-color);">
+                <div class="card-body">
+                    <h6><i class="bi bi-list-check me-2"></i>Next Steps</h6>
+                    <ul class="mb-0" style="color: var(--text-secondary);">
+                        <li>✅ Build 100 leads (4 segments)</li>
+                        <li>✅ Create email sequences</li>
+                        <li>🔄 Google Workspace setup (in progress)</li>
+                        <li>⏳ Complete email warmup</li>
+                        <li>⏳ Launch sequences</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- TradeCraft Section -->
+        <div id="section-tradecraft" class="content-section">
+            <div class="section-header mb-4">
+                <h4><i class="bi bi-graph-up-arrow me-2" style="color: var(--accent-green);"></i>TradeCraft</h4>
+                <span class="badge" style="background: var(--accent-blue);">Weekend - Paused</span>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Buying Power</div>
+                        <div class="stat-value">$10,000</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Daily P&L</div>
+                        <div class="stat-value">$0</div>
+                        <div class="stat-change text-secondary">Weekend</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Open Positions</div>
+                        <div class="stat-value">0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-label">Daily Loss Limit</div>
+                        <div class="stat-value">$2,000</div>
+                        <div class="stat-change text-warning">Hard stop</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-4" style="background: var(--bg-secondary); border-color: var(--border-color);">
+                <div class="card-body">
+                    <h6><i class="bi bi-clock me-2"></i>Next Trading Session</h6>
+                    <p class="mb-0 text-secondary">Monday, Feb 10 at 6:30 AM PST (ORB strategy)</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LiftedPick Section -->
+        <div id="section-liftedpick" class="content-section">
+            <div class="section-header mb-4">
+                <h4><i class="bi bi-upc-scan me-2" style="color: var(--accent-green);"></i>LiftedPick</h4>
+                <span class="badge" style="background: var(--accent-green);">Live</span>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value">Testing</div>
+                        <div class="stat-change text-success">Staff testing at Lifted</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Manifests Processed</div>
+                        <div class="stat-value">TBD</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Deployment</div>
+                        <div class="stat-value">Fly.io</div>
+                        <div class="stat-change text-success">Healthy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CannaCart Section -->
+        <div id="section-cannacart" class="content-section">
+            <div class="section-header mb-4">
+                <h4><i class="bi bi-cart3 me-2" style="color: var(--accent-purple);"></i>CannaCart</h4>
+                <span class="badge" style="background: var(--accent-green);">Live</span>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Status</div>
+                        <div class="stat-value">Active</div>
+                        <div class="stat-change text-success">Awaiting Chetu features</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Orders Processed</div>
+                        <div class="stat-value">11+</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <div class="stat-label">Platform</div>
+                        <div class="stat-value">lifted-orders.vercel.app</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notifications Section -->
+        <div id="section-notifications" class="content-section">
+            <div class="section-header mb-4">
+                <h4><i class="bi bi-bell me-2"></i>Notifications</h4>
+            </div>
+            <div class="card" style="background: var(--bg-secondary); border-color: var(--border-color);">
+                <div class="card-body">
+                    <p class="text-secondary mb-0"><i class="bi bi-inbox me-2"></i>No new notifications. Alerts will appear here.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Section -->
+        <div id="section-settings" class="content-section">
+            <div class="section-header mb-4">
+                <h4><i class="bi bi-gear me-2"></i>Settings</h4>
+            </div>
+            <div class="card" style="background: var(--bg-secondary); border-color: var(--border-color);">
+                <div class="card-body">
+                    <h6>Integrations</h6>
+                    <ul class="mb-0" style="color: var(--text-secondary);">
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Apollo.io - Connected</li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Alpaca Markets - Connected</li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Fly.io - Connected</li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Telegram Relay - Active</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
     </main>
 
     <!-- Chat Widget -->
@@ -1941,6 +2152,44 @@
         });
         
         checkAuth();
+        
+        // Navigation
+        function initNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link[data-section]');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = link.dataset.section;
+                    
+                    // Update nav active state
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    // Update section visibility
+                    document.querySelectorAll('.content-section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    const targetSection = document.getElementById('section-' + sectionId);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+                    
+                    // Update page title
+                    const sectionName = link.textContent.trim();
+                    const titleEl = document.querySelector('.top-bar-title h4');
+                    if (titleEl) {
+                        titleEl.textContent = sectionId === 'dashboard' ? 'Portfolio Overview' : sectionName;
+                    }
+                    
+                    // Close mobile menu if open
+                    document.getElementById('sidebar')?.classList.remove('open');
+                });
+            });
+        }
+        
+        initNavigation();
         
         // Chat Widget
         const chatFab = document.getElementById('chatFab');

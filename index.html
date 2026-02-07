@@ -1951,25 +1951,52 @@
         const chatMessages = document.getElementById('chatMessages');
         const chatTyping = document.getElementById('chatTyping');
         
-        // Gateway config - connects to OpenClaw
-        const GATEWAY_URL = localStorage.getItem('gateway_url') || '';
-        const GATEWAY_TOKEN = localStorage.getItem('gateway_token') || '';
+        // Relay config - connects to Cloudflare Worker
+        const RELAY_URL = 'https://mc-relay.georgebot253.workers.dev';
         
-        // Load chat history from localStorage
-        let chatHistory = JSON.parse(localStorage.getItem('mission_control_chat') || '[]');
+        // Load chat history
+        let chatHistory = [];
+        let lastPollTime = 0;
         
         // Initialize chat
-        function initChat() {
+        async function initChat() {
+            // Fetch messages from relay
+            try {
+                const res = await fetch(`${RELAY_URL}/messages`);
+                const data = await res.json();
+                if (data.messages && data.messages.length > 0) {
+                    chatHistory = data.messages;
+                }
+            } catch (e) {
+                console.log('Could not fetch messages:', e);
+            }
+            
             // Show welcome message if no history
             if (chatHistory.length === 0) {
                 chatHistory.push({
                     sender: 'george',
-                    text: "Hey Anthony! 👋 Mission Control chat is live. Send me commands or questions here - same tokens as Telegram, just more integrated.\n\nTry: \"check bot status\" or \"what's the lead count?\"",
+                    text: "Hey! 👋 Mission Control chat is live and connected to Telegram.\n\nMessages you send here come straight to me. Try: \"check bot status\" or \"what's next?\"",
                     time: new Date().toISOString()
                 });
-                saveChatHistory();
             }
             renderMessages();
+            
+            // Start polling for new messages
+            setInterval(pollMessages, 5000);
+        }
+        
+        // Poll for new messages
+        async function pollMessages() {
+            try {
+                const res = await fetch(`${RELAY_URL}/messages`);
+                const data = await res.json();
+                if (data.messages && data.messages.length > chatHistory.length) {
+                    chatHistory = data.messages;
+                    renderMessages();
+                }
+            } catch (e) {
+                // Silent fail
+            }
         }
         
         // Render messages
@@ -2005,98 +2032,51 @@
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         }
         
-        // Save chat history
-        function saveChatHistory() {
-            // Keep last 50 messages
-            if (chatHistory.length > 50) {
-                chatHistory = chatHistory.slice(-50);
-            }
-            localStorage.setItem('mission_control_chat', JSON.stringify(chatHistory));
-        }
-        
         // Send message
         async function sendMessage() {
             const text = chatInput.value.trim();
             if (!text) return;
             
-            // Add user message
+            // Add user message locally
             chatHistory.push({
                 sender: 'user',
                 text: text,
                 time: new Date().toISOString()
             });
-            saveChatHistory();
             renderMessages();
             chatInput.value = '';
             
             // Show typing indicator
             chatTyping.classList.add('active');
             
-            // Send to OpenClaw Gateway (if configured)
+            // Send to relay (which sends to Telegram)
             try {
-                const response = await sendToGateway(text);
-                chatTyping.classList.remove('active');
-                
-                // Add George's response
-                chatHistory.push({
-                    sender: 'george',
-                    text: response,
-                    time: new Date().toISOString()
+                await fetch(`${RELAY_URL}/send`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
                 });
-                saveChatHistory();
-                renderMessages();
+                
+                // Add acknowledgment
+                setTimeout(() => {
+                    chatTyping.classList.remove('active');
+                    chatHistory.push({
+                        sender: 'george',
+                        text: "📨 Message sent to George via Telegram. Response incoming...",
+                        time: new Date().toISOString()
+                    });
+                    renderMessages();
+                }, 500);
+                
             } catch (error) {
                 chatTyping.classList.remove('active');
-                
-                // Fallback response
                 chatHistory.push({
                     sender: 'george',
-                    text: getOfflineResponse(text),
+                    text: "⚠️ Couldn't send message. Check your connection.",
                     time: new Date().toISOString()
                 });
-                saveChatHistory();
                 renderMessages();
             }
-        }
-        
-        // Send to OpenClaw Gateway
-        async function sendToGateway(message) {
-            if (!GATEWAY_URL || !GATEWAY_TOKEN) {
-                throw new Error('Gateway not configured');
-            }
-            
-            const res = await fetch(`${GATEWAY_URL}/api/chat`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${GATEWAY_TOKEN}`
-                },
-                body: JSON.stringify({ message })
-            });
-            
-            if (!res.ok) throw new Error('Gateway error');
-            const data = await res.json();
-            return data.response;
-        }
-        
-        // Offline/fallback responses
-        function getOfflineResponse(input) {
-            const lower = input.toLowerCase();
-            
-            if (lower.includes('status') || lower.includes('bot')) {
-                return "📊 **TradeCraft Status**\n• State: Weekend (market closed)\n• Next run: Monday 6:30 AM PST\n• Last trade: None yet\n\nI'll send you alerts via Telegram when it makes moves!";
-            }
-            if (lower.includes('lead') || lower.includes('apollo')) {
-                return "👥 **Conduit Leads**\n• Total: 25 contacts\n• List: Conduit Test Batch 1\n• Status: Email warmup (~17 days)\n\nReady to export when warmup completes!";
-            }
-            if (lower.includes('next') || lower.includes('task')) {
-                return "📋 **Next Up**\n1. Continue email warmup (~17 days)\n2. Monday: Monitor TradeCraft at market open\n3. Build email sequence for outreach\n\nAnything specific you want me to focus on?";
-            }
-            if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-                return "Hey! 👋 What can I help you with?\n\nTry asking about:\n• Bot/trading status\n• Lead count\n• What's next on the agenda";
-            }
-            
-            return "Got it! For real-time responses, I'm also on Telegram. This chat syncs to the same conversation.\n\n*To enable live AI responses here, configure the Gateway connection in Settings.*";
         }
         
         // Toggle chat panel

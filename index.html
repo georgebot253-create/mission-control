@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0d1117">
+    <link rel="manifest" href="manifest.json">
+    <title>Mission Control</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --border-color: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent-green: #3fb950;
+            --accent-yellow: #d29922;
+            --accent-red: #f85149;
+            --accent-blue: #58a6ff;
+            --accent-purple: #a371f7;
+        }
+        
+        * { box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 260px;
+            height: 100vh;
+            background-color: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 1rem 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-brand {
+            padding: 0.5rem 1rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-brand h5 {
+            margin: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Command Palette Trigger */
+        .cmd-trigger {
+            margin: 0 1rem 1rem;
+            padding: 0.6rem 0.75rem;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .cmd-trigger:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+        }
+        
+        .cmd-trigger kbd {
+            margin-left: auto;
+            background: var(--bg-primary);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-family: inherit;
+        }
+        
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .sidebar-nav .nav-item {
+            margin: 2px 8px;
+        }
+        
+        .sidebar-nav .nav-link {
+            color: var(--text-secondary);
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+        
+        .sidebar-nav .nav-link:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .sidebar-nav .nav-link.active {
+            background-color: rgba(88, 166, 255, 0.15);
+            color: var(--accent-blue);
+        }
+        
+        .nav-section {
+            padding: 1.25rem 1rem 0.5rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Notification Badge */
+        .notif-badge {
+            background: var(--accent-red);
+            color: white;
+            font-size: 0.65rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            margin-left: auto;
+            font-weight: 600;
+        }
+        
+        /* Health Indicator */
+        .health-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: auto;
+        }
+        
+        .health-green { background-color: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+        .health-yellow { background-color: var(--accent-yellow); box-shadow: 0 0 8px var(--accent-yellow); }
+        .health-red { background-color: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); }
+        .health-blue { background-color: var(--accent-blue); }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 1.5rem 2rem;
+            min-height: 100vh;
+        }
+        
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .top-bar-title h4 {
+            margin: 0 0 0.25rem;
+            font-weight: 700;
+        }
+        
+        .top-bar-title p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .top-bar-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        /* Cards */
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+        
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--border-color);
+            transform: translateY(-2px);
+        }
+        
+        .stat-card .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-card .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.35rem;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .stat-card .stat-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        /* API Widget */
+        .api-widget {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .api-widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .api-widget-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .api-widget-status {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            background: rgba(63, 185, 80, 0.15);
+            color: var(--accent-green);
+        }
+        
+        .api-widget-status.offline {
+            background: rgba(248, 81, 73, 0.15);
+            color: var(--accent-red);
+        }
+        
+        .api-widget-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        
+        .api-metric {
+            text-align: center;
+        }
+        
+        .api-metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .api-metric-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        /* Business Row */
+        .business-row {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .business-row:hover {
+            border-color: var(--accent-blue);
+            transform: translateX(4px);
+        }
+        
+        .business-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .business-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .business-name {
+            font-weight: 600;
+            margin-bottom: 0.15rem;
+        }
+        
+        .business-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .business-metrics {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .metric {
+            text-align: right;
+        }
+        
+        .metric-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .metric-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .status-live { background-color: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
+        .status-warming { background-color: rgba(210, 153, 34, 0.15); color: var(--accent-yellow); }
+        .status-ready { background-color: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
+        .status-paused { background-color: rgba(248, 81, 73, 0.15); color: var(--accent-red); }
+        
+        /* Timer Card */
+        .timer-card {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+        }
+        
+        .timer-card:hover {
+            border-color: var(--accent-blue);
+        }
+        
+        .timer-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .timer-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        
+        /* Live Activity Feed */
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .activity-feed::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .activity-feed::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+        }
+        
+        .activity-feed::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        .activity-item {
+            padding: 0.85rem 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.75rem;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background-color: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        
+        .activity-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .activity-text {
+            font-size: 0.85rem;
+            margin-bottom: 0.15rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .activity-text strong {
+            color: var(--accent-blue);
+        }
+        
+        .activity-meta {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .activity-business {
+            background: var(--bg-tertiary);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        /* Section Header */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .section-header h6 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .section-header .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        /* Command Palette Modal */
+        .cmd-palette-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            padding-top: 15vh;
+        }
+        
+        .cmd-palette-overlay.active {
+            display: flex;
+        }
+        
+        .cmd-palette {
+            width: 100%;
+            max-width: 580px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            max-height: 70vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .cmd-input-wrapper {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .cmd-input-wrapper i {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .cmd-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+        }
+        
+        .cmd-input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .cmd-results {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        
+        .cmd-section-title {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        
+        .cmd-item {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+        
+        .cmd-item:hover, .cmd-item.selected {
+            background: var(--bg-tertiary);
+        }
+        
+        .cmd-item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cmd-item-text {
+            flex: 1;
+        }
+        
+        .cmd-item-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .cmd-item-desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .cmd-item-shortcut {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .cmd-item-shortcut kbd {
+            background: var(--bg-primary);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-family: inherit;
+        }
+        
+        .cmd-footer {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .cmd-footer span {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        /* Quick Stats Bar */
+        .quick-stats {
+            display: flex;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+        
+        .quick-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+        
+        .quick-stat i {
+            font-size: 0.9rem;
+        }
+        
+        .quick-stat-value {
+            font-weight: 600;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .business-metrics {
+                gap: 1rem;
+            }
+            .metric { display: none; }
+            .metric:last-of-type { display: block; }
+        }
+        
+        @media (max-width: 991px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .mobile-menu-btn {
+                display: block !important;
+            }
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+        }
+        
+        /* Buttons */
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Command Palette -->
+    <div class="cmd-palette-overlay" id="cmdPalette">
+        <div class="cmd-palette">
+            <div class="cmd-input-wrapper">
+                <i class="bi bi-search"></i>
+                <input type="text" class="cmd-input" id="cmdInput" placeholder="Search commands, businesses, actions..." autofocus>
+                <kbd>ESC</kbd>
+            </div>
+            <div class="cmd-results" id="cmdResults">
+                <div class="cmd-section-title">Quick Actions</div>
+                <div class="cmd-item" data-action="new-lead">
+                    <div class="cmd-item-icon text-success"><i class="bi bi-person-plus"></i></div>
+                    <div class="cmd-item-text">
+                        <div class="cmd-item-title">Add New Lead</div>
+                        <div class="cmd-item-desc">Add a contact to Apollo list</div>
+                    </div>
+                </div>
+                <div class="cmd-item" data-action="check-bot">
+                    <div class="cmd-item-icon text-info"><i class="bi bi-robot"></i></div>
+                    <div class="cmd-item-text">
+                        <div class="cmd-item-title">Check TradeCraft Status</div>
+                        <div class="cmd-item-desc">View bot health and positions</div>
+                    </div>
+                </div>
+                <div class="cmd-item" data-action="export-leads">
+                    <div class="cmd-item-icon text-warning"><i class="bi bi-download"></i></div>
+                    <div class="cmd-item-text">
+                        <div class="cmd-item-title">Export Leads</div>
+                        <div class="cmd-item-desc">Download Apollo list as CSV</div>
+                    </div>
+                </div>
+                
+                <div class="cmd-section-title">Businesses</div>
+                <div class="cmd-item" data-action="goto-conduit">
+                    <div class="cmd-item-icon" style="background: rgba(88, 166, 255, 0.15); color: var(--accent-blue);"><i class="bi bi-envelope"></i></div>
+                    <div class="cmd-item-text">
+                        <div class="cmd-item-title">Conduit</div>
+                        <div class="cmd-item-desc">B2B Agency • 25 leads</div>
+                    </div>
+                    <div class="cmd-item-shortcut"><kbd>G</kbd><kbd>C</kbd></div>
+                </div>
+                <div class="cmd-item" data-action="goto-tradecraft">
+                    <div class="cmd-item-icon" style="background: rgba(63, 185, 80, 0.15); color: var(--accent-green);"><i class="bi bi-graph-up-arrow"></i></div>
+                    <div class="cmd-item-text">
+                        <div class="cmd-item-title">TradeCraft</div>
+                        <div class="cmd-item-desc">Algorithmic Trading • Ready</div>
+                    </div>
+                    <div class="cmd-item-shortcut"><kbd>G</kbd><kbd>T</kbd></div>
+                </div>
+                <div class="cmd-item" data-action="goto-liftedpick">
+                    <div class="cmd-item-icon" style="background: rgba(163, 113, 247, 0.15); color: #a371f7;"><i class="bi bi-upc-scan"></i></div>
+                    <div class="cmd-item-text">
+                        <div class="cmd-item-title">LiftedPick</div>
+                        <div class="cmd-item-desc">SaaS • Live</div>
+                    </div>
+                    <div class="cmd-item-shortcut"><kbd>G</kbd><kbd>L</kbd></div>
+                </div>
+                <div class="cmd-item" data-action="goto-cannacart">
+                    <div class="cmd-item-icon" style="background: rgba(210, 153, 34, 0.15); color: var(--accent-yellow);"><i class="bi bi-cart3"></i></div>
+                    <div class="cmd-item-text">
+                        <div class="cmd-item-title">CannaCart</div>
+                        <div class="cmd-item-desc">SaaS • Live</div>
+                    </div>
+                    <div class="cmd-item-shortcut"><kbd>G</kbd><kbd>A</kbd></div>
+                </div>
+                
+                <div class="cmd-section-title">Tools</div>
+                <div class="cmd-item" data-action="open-apollo">
+                    <div class="cmd-item-icon text-primary"><i class="bi bi-bullseye"></i></div>
+                    <div class="cmd-item-text">
+                        <div class="cmd-item-title">Open Apollo.io</div>
+                        <div class="cmd-item-desc">Lead database</div>
+                    </div>
+                </div>
+                <div class="cmd-item" data-action="open-alpaca">
+                    <div class="cmd-item-icon text-success"><i class="bi bi-bank"></i></div>
+                    <div class="cmd-item-text">
+                        <div class="cmd-item-title">Open Alpaca Dashboard</div>
+                        <div class="cmd-item-desc">Trading account</div>
+                    </div>
+                </div>
+                <div class="cmd-item" data-action="refresh">
+                    <div class="cmd-item-icon text-secondary"><i class="bi bi-arrow-clockwise"></i></div>
+                    <div class="cmd-item-text">
+                        <div class="cmd-item-title">Refresh Dashboard</div>
+                        <div class="cmd-item-desc">Reload all data</div>
+                    </div>
+                    <div class="cmd-item-shortcut"><kbd>⌘</kbd><kbd>R</kbd></div>
+                </div>
+            </div>
+            <div class="cmd-footer">
+                <span><kbd>↑↓</kbd> Navigate</span>
+                <span><kbd>↵</kbd> Select</span>
+                <span><kbd>ESC</kbd> Close</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h5><i class="bi bi-rocket-takeoff text-primary"></i> Mission Control</h5>
+        </div>
+        
+        <!-- Command Palette Trigger -->
+        <div class="cmd-trigger" id="cmdTrigger">
+            <i class="bi bi-search"></i>
+            Search...
+            <kbd>⌘K</kbd>
+        </div>
+        
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="bi bi-grid-1x2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-activity"></i> Activity
+                    <span class="notif-badge">12</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-bar-chart-line"></i> Analytics
+                </a>
+            </li>
+        </ul>
+        
+        <div class="nav-section">Businesses</div>
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-envelope"></i> Conduit
+                    <span class="health-dot health-yellow"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-graph-up-arrow"></i> TradeCraft
+                    <span class="health-dot health-blue"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-upc-scan"></i> LiftedPick
+                    <span class="health-dot health-green"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-cart3"></i> CannaCart
+                    <span class="health-dot health-green"></span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="nav-section">Integrations</div>
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a href="https://app.apollo.io" target="_blank" class="nav-link">
+                    <i class="bi bi-bullseye"></i> Apollo.io
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://app.alpaca.markets" target="_blank" class="nav-link">
+                    <i class="bi bi-bank"></i> Alpaca
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://fly.io" target="_blank" class="nav-link">
+                    <i class="bi bi-cloud"></i> Fly.io
+                </a>
+            </li>
+        </ul>
+        
+        <div class="nav-section mt-auto">System</div>
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-bell"></i> Notifications
+                    <span class="notif-badge">3</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="bi bi-gear"></i> Settings
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Mobile Menu Button -->
+        <button class="btn btn-outline-secondary btn-icon mobile-menu-btn mb-3" onclick="document.getElementById('sidebar').classList.toggle('open')">
+            <i class="bi bi-list"></i>
+        </button>
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-title">
+                <h4>Portfolio Overview</h4>
+                <p id="currentTime">Feb 7, 2026 • 7:04 AM PST</p>
+            </div>
+            <div class="top-bar-actions">
+                <button class="btn btn-outline-secondary btn-icon" title="Notifications">
+                    <i class="bi bi-bell"></i>
+                </button>
+                <button class="btn btn-outline-secondary btn-icon" onclick="location.reload()" title="Refresh">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+                <button class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-lg me-1"></i> New Business
+                </button>
+            </div>
+        </div>
+        
+        <!-- Quick Stats Bar -->
+        <div class="quick-stats">
+            <div class="quick-stat">
+                <i class="bi bi-circle-fill text-success" style="font-size: 0.5rem;"></i>
+                <span>Systems:</span>
+                <span class="quick-stat-value">3/4 Online</span>
+            </div>
+            <div class="quick-stat">
+                <i class="bi bi-envelope text-info"></i>
+                <span>Apollo:</span>
+                <span class="quick-stat-value">10K credits</span>
+            </div>
+            <div class="quick-stat">
+                <i class="bi bi-graph-up text-success"></i>
+                <span>Alpaca:</span>
+                <span class="quick-stat-value">$10,000 BP</span>
+            </div>
+            <div class="quick-stat">
+                <i class="bi bi-cloud-check text-primary"></i>
+                <span>Fly.io:</span>
+                <span class="quick-stat-value">Healthy</span>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(88, 166, 255, 0.15); color: var(--accent-blue);">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <div class="stat-label">Businesses</div>
+                    <div class="stat-value">4</div>
+                    <div class="stat-change text-success"><i class="bi bi-arrow-up"></i> 2 this week</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(63, 185, 80, 0.15); color: var(--accent-green);">
+                        <i class="bi bi-currency-dollar"></i>
+                    </div>
+                    <div class="stat-label">Revenue (24h)</div>
+                    <div class="stat-value">$0</div>
+                    <div class="stat-change text-secondary">Testing phase</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(210, 153, 34, 0.15); color: var(--accent-yellow);">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stat-label">Active Leads</div>
+                    <div class="stat-value">25</div>
+                    <div class="stat-change text-success"><i class="bi bi-arrow-up"></i> +18 today</div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(163, 113, 247, 0.15); color: var(--accent-purple);">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="stat-label">Uptime</div>
+                    <div class="stat-value">99.9%</div>
+                    <div class="stat-change text-success">All systems go</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Businesses Column -->
+            <div class="col-lg-8">
+                <!-- API Widgets -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="api-widget">
+                            <div class="api-widget-header">
+                                <div class="api-widget-title">
+                                    <i class="bi bi-bullseye text-primary"></i> Apollo.io
+                                </div>
+                                <span class="api-widget-status">Connected</span>
+                            </div>
+                            <div class="api-widget-metrics">
+                                <div class="api-metric">
+                                    <div class="api-metric-value">25</div>
+                                    <div class="api-metric-label">Leads</div>
+                                </div>
+                                <div class="api-metric">
+                                    <div class="api-metric-value">10K</div>
+                                    <div class="api-metric-label">Credits</div>
+                                </div>
+                                <div class="api-metric">
+                                    <div class="api-metric-value">1</div>
+                                    <div class="api-metric-label">Lists</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="api-widget">
+                            <div class="api-widget-header">
+                                <div class="api-widget-title">
+                                    <i class="bi bi-bank text-success"></i> Alpaca Markets
+                                </div>
+                                <span class="api-widget-status offline">Weekend</span>
+                            </div>
+                            <div class="api-widget-metrics">
+                                <div class="api-metric">
+                                    <div class="api-metric-value">$0</div>
+                                    <div class="api-metric-label">P&L</div>
+                                </div>
+                                <div class="api-metric">
+                                    <div class="api-metric-value">$10K</div>
+                                    <div class="api-metric-label">Buying Power</div>
+                                </div>
+                                <div class="api-metric">
+                                    <div class="api-metric-value">0</div>
+                                    <div class="api-metric-label">Positions</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-header">
+                    <h6><i class="bi bi-buildings me-2"></i>Businesses</h6>
+                    <a href="#" class="text-secondary text-decoration-none small">View all →</a>
+                </div>
+                
+                <!-- CONDUIT -->
+                <div class="business-row">
+                    <div class="business-info">
+                        <div class="business-icon" style="background: rgba(88, 166, 255, 0.15); color: var(--accent-blue);">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+                        <div>
+                            <div class="business-name">Conduit</div>
+                            <div class="business-type">B2B Outbound Agency</div>
+                        </div>
+                    </div>
+                    <div class="business-metrics">
+                        <div class="metric">
+                            <div class="metric-label">Leads</div>
+                            <div class="metric-value">25</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Pipeline</div>
+                            <div class="metric-value">$0</div>
+                        </div>
+                        <span class="status-badge status-warming">
+                            <span class="health-dot health-yellow"></span> Warming
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- TRADECRAFT -->
+                <div class="business-row">
+                    <div class="business-info">
+                        <div class="business-icon" style="background: rgba(63, 185, 80, 0.15); color: var(--accent-green);">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                        <div>
+                            <div class="business-name">TradeCraft</div>
+                            <div class="business-type">Algorithmic Trading</div>
+                        </div>
+                    </div>
+                    <div class="business-metrics">
+                        <div class="metric">
+                            <div class="metric-label">Day P&L</div>
+                            <div class="metric-value">$0</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Win Rate</div>
+                            <div class="metric-value">—</div>
+                        </div>
+                        <span class="status-badge status-ready">
+                            <span class="health-dot health-blue"></span> Weekend
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- LIFTEDPICK -->
+                <div class="business-row">
+                    <div class="business-info">
+                        <div class="business-icon" style="background: rgba(163, 113, 247, 0.15); color: #a371f7;">
+                            <i class="bi bi-upc-scan"></i>
+                        </div>
+                        <div>
+                            <div class="business-name">LiftedPick</div>
+                            <div class="business-type">SaaS • Barcode Verification</div>
+                        </div>
+                    </div>
+                    <div class="business-metrics">
+                        <div class="metric">
+                            <div class="metric-label">Scans</div>
+                            <div class="metric-value">0</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Accuracy</div>
+                            <div class="metric-value">—</div>
+                        </div>
+                        <span class="status-badge status-live">
+                            <span class="health-dot health-green"></span> Live
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- CANNACART -->
+                <div class="business-row">
+                    <div class="business-info">
+                        <div class="business-icon" style="background: rgba(210, 153, 34, 0.15); color: var(--accent-yellow);">
+                            <i class="bi bi-cart3"></i>
+                        </div>
+                        <div>
+                            <div class="business-name">CannaCart</div>
+                            <div class="business-type">SaaS • Order Automation</div>
+                        </div>
+                    </div>
+                    <div class="business-metrics">
+                        <div class="metric">
+                            <div class="metric-label">Orders</div>
+                            <div class="metric-value">11</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Accounts</div>
+                            <div class="metric-value">1</div>
+                        </div>
+                        <span class="status-badge status-live">
+                            <span class="health-dot health-green"></span> Live
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- Timers -->
+                <div class="section-header">
+                    <h6><i class="bi bi-clock-history me-2"></i>Timers</h6>
+                </div>
+                
+                <div class="timer-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="timer-label">Email Warmup</div>
+                            <div class="timer-value" id="warmupTimer">~17 days</div>
+                        </div>
+                        <i class="bi bi-envelope-check text-warning fs-4"></i>
+                    </div>
+                </div>
+                
+                <div class="timer-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="timer-label">Market Open</div>
+                            <div class="timer-value" id="marketTimer">Mon 6:30 AM</div>
+                        </div>
+                        <i class="bi bi-graph-up text-info fs-4"></i>
+                    </div>
+                </div>
+                
+                <div class="timer-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="timer-label">Hawaii Trip ✈️</div>
+                            <div class="timer-value" id="tripTimer">11 days</div>
+                        </div>
+                        <i class="bi bi-sun text-success fs-4"></i>
+                    </div>
+                </div>
+                
+                <!-- Live Activity Feed -->
+                <div class="section-header mt-4">
+                    <h6><span class="live-dot"></span> Live Activity</h6>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body p-0">
+                        <div class="activity-feed p-3" id="activityFeed">
+                            <div class="activity-item">
+                                <div class="activity-icon text-success">
+                                    <i class="bi bi-person-plus"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text">Added <strong>18 leads</strong> to Apollo list</div>
+                                    <div class="activity-meta">
+                                        <span class="activity-business">CONDUIT</span>
+                                        <span>Just now</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon text-primary">
+                                    <i class="bi bi-stars"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text">Mission Control dashboard launched</div>
+                                    <div class="activity-meta">
+                                        <span class="activity-business">SYSTEM</span>
+                                        <span>2 min ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon text-info">
+                                    <i class="bi bi-arrow-up-circle"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text">Apollo upgraded to <strong>Pro plan</strong></div>
+                                    <div class="activity-meta">
+                                        <span class="activity-business">CONDUIT</span>
+                                        <span>1 hour ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon text-warning">
+                                    <i class="bi bi-bell"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text">Telegram alerts configured</div>
+                                    <div class="activity-meta">
+                                        <span class="activity-business">TRADECRAFT</span>
+                                        <span>Yesterday</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon" style="color: var(--accent-purple);">
+                                    <i class="bi bi-rocket-takeoff"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text">Deployed to <strong>production</strong></div>
+                                    <div class="activity-meta">
+                                        <span class="activity-business">LIFTEDPICK</span>
+                                        <span>2 days ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon text-success">
+                                    <i class="bi bi-check2-circle"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text">Order #11 completed</div>
+                                    <div class="activity-meta">
+                                        <span class="activity-business">CANNACART</span>
+                                        <span>3 days ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-icon text-info">
+                                    <i class="bi bi-wrench"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-text">Trading bot API optimized</div>
+                                    <div class="activity-meta">
+                                        <span class="activity-business">TRADECRAFT</span>
+                                        <span>4 days ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Command Palette
+        const cmdPalette = document.getElementById('cmdPalette');
+        const cmdInput = document.getElementById('cmdInput');
+        const cmdTrigger = document.getElementById('cmdTrigger');
+        const cmdResults = document.getElementById('cmdResults');
+        
+        // Open command palette
+        function openCmdPalette() {
+            cmdPalette.classList.add('active');
+            cmdInput.focus();
+            cmdInput.value = '';
+        }
+        
+        // Close command palette
+        function closeCmdPalette() {
+            cmdPalette.classList.remove('active');
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Cmd/Ctrl + K
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                openCmdPalette();
+            }
+            // Escape
+            if (e.key === 'Escape') {
+                closeCmdPalette();
+            }
+            // Slash to search
+            if (e.key === '/' && !cmdPalette.classList.contains('active')) {
+                e.preventDefault();
+                openCmdPalette();
+            }
+        });
+        
+        // Click trigger
+        cmdTrigger.addEventListener('click', openCmdPalette);
+        
+        // Close on overlay click
+        cmdPalette.addEventListener('click', (e) => {
+            if (e.target === cmdPalette) {
+                closeCmdPalette();
+            }
+        });
+        
+        // Handle command item clicks
+        document.querySelectorAll('.cmd-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const action = item.dataset.action;
+                handleAction(action);
+                closeCmdPalette();
+            });
+        });
+        
+        // Search filtering
+        cmdInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('.cmd-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+        });
+        
+        // Handle actions
+        function handleAction(action) {
+            switch(action) {
+                case 'open-apollo':
+                    window.open('https://app.apollo.io', '_blank');
+                    break;
+                case 'open-alpaca':
+                    window.open('https://app.alpaca.markets', '_blank');
+                    break;
+                case 'refresh':
+                    location.reload();
+                    break;
+                default:
+                    console.log('Action:', action);
+            }
+        }
+        
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+                timeZoneName: 'short'
+            };
+            document.getElementById('currentTime').textContent = now.toLocaleString('en-US', options);
+        }
+        updateTime();
+        setInterval(updateTime, 60000);
+        
+        // Market timer countdown
+        function updateMarketTimer() {
+            const now = new Date();
+            const day = now.getDay();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            
+            // Market opens Mon-Fri 6:30 AM PST
+            let daysUntilOpen = 0;
+            if (day === 0) daysUntilOpen = 1; // Sunday
+            else if (day === 6) daysUntilOpen = 2; // Saturday
+            else if (hours >= 13) daysUntilOpen = day === 5 ? 3 : 1; // After market close
+            
+            if (daysUntilOpen === 0 && hours >= 6 && hours < 13) {
+                document.getElementById('marketTimer').textContent = 'OPEN NOW';
+                document.getElementById('marketTimer').style.color = 'var(--accent-green)';
+            } else {
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                const nextDay = (day + daysUntilOpen) % 7;
+                document.getElementById('marketTimer').textContent = `${days[nextDay]} 6:30 AM`;
+            }
+        }
+        updateMarketTimer();
+        
+        // Simulated live activity (would be WebSocket in production)
+        const activities = [
+            { icon: 'bi-lightning-charge', color: 'text-warning', text: 'System health check passed', business: 'SYSTEM' },
+            { icon: 'bi-shield-check', color: 'text-success', text: 'All services responding', business: 'SYSTEM' },
+        ];
+        
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>

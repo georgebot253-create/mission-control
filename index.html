@@ -1960,18 +1960,17 @@
         
         // Initialize chat
         async function initChat() {
-            // Fetch messages from relay
+            // Always fetch messages from relay first
             try {
                 const res = await fetch(`${RELAY_URL}/messages`);
                 const data = await res.json();
-                if (data.messages && data.messages.length > 0) {
-                    chatHistory = data.messages;
-                }
+                chatHistory = data.messages || [];
             } catch (e) {
                 console.log('Could not fetch messages:', e);
+                chatHistory = [];
             }
             
-            // Show welcome message if no history
+            // Show welcome message only if truly empty
             if (chatHistory.length === 0) {
                 chatHistory.push({
                     sender: 'george',
@@ -1981,8 +1980,8 @@
             }
             renderMessages();
             
-            // Start polling for new messages
-            setInterval(pollMessages, 5000);
+            // Start polling for new messages every 3 seconds
+            setInterval(pollMessages, 3000);
         }
         
         // Poll for new messages
@@ -1990,12 +1989,18 @@
             try {
                 const res = await fetch(`${RELAY_URL}/messages`);
                 const data = await res.json();
-                if (data.messages && data.messages.length > chatHistory.length) {
-                    chatHistory = data.messages;
-                    renderMessages();
+                if (data.messages) {
+                    // Check if there are new messages by comparing last message time
+                    const serverLast = data.messages[data.messages.length - 1];
+                    const localLast = chatHistory[chatHistory.length - 1];
+                    
+                    if (!localLast || !serverLast || serverLast.time !== localLast.time || data.messages.length !== chatHistory.length) {
+                        chatHistory = data.messages;
+                        renderMessages();
+                    }
                 }
             } catch (e) {
-                // Silent fail
+                console.log('Poll error:', e);
             }
         }
         

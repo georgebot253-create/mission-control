@@ -410,6 +410,8 @@
         }
         
         .status-live { background-color: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
+        .status-building { background-color: rgba(163, 113, 247, 0.15); color: var(--accent-purple); }
+        .status-launching { background-color: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
         .status-warming { background-color: rgba(210, 153, 34, 0.15); color: var(--accent-yellow); }
         .status-ready { background-color: rgba(88, 166, 255, 0.15); color: var(--accent-blue); }
         .status-paused { background-color: rgba(248, 81, 73, 0.15); color: var(--accent-red); }
@@ -1950,6 +1952,12 @@
                     <span class="health-dot health-green"></span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-section="penciled">
+                    <i class="bi bi-pencil"></i> Penciled
+                    <span class="health-dot health-yellow"></span>
+                </a>
+            </li>
         </ul>
         
         <div class="nav-section">Agent Ops</div>
@@ -2632,6 +2640,32 @@
                         </div>
                         <span class="status-badge status-live">
                             <span class="health-dot health-green"></span> Live
+                        </span>
+                    </div>
+                </div>
+
+                <!-- PENCILED -->
+                <div class="business-row" data-business="penciled" onclick="showBusinessDetail('penciled')" style="cursor:pointer;">
+                    <div class="business-info">
+                        <div class="business-icon" style="background: rgba(163, 113, 247, 0.15); color: var(--accent-purple);">
+                            <i class="bi bi-pencil"></i>
+                        </div>
+                        <div>
+                            <div class="business-name">Penciled</div>
+                            <div class="business-type">Vertical AI SaaS • Contractor Bookkeeping</div>
+                        </div>
+                    </div>
+                    <div class="business-metrics">
+                        <div class="metric">
+                            <div class="metric-label">MRR</div>
+                            <div class="metric-value">$0</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Users</div>
+                            <div class="metric-value">0</div>
+                        </div>
+                        <span class="status-badge status-building">
+                            <span class="health-dot health-yellow"></span> Building
                         </span>
                     </div>
                 </div>
@@ -3893,7 +3927,8 @@
                 'LIFTEDPICK': 'bi-upc-scan',
                 'ARBITER SUPPLY': 'bi-box-seam',
                 'ATLAS DIGITAL': 'bi-globe2',
-                'CANNACART': 'bi-cart3'
+                'CANNACART': 'bi-cart3',
+                'PENCILED': 'bi-pencil'
             };
 
             feed.innerHTML = items.slice(0, 10).map(item => `

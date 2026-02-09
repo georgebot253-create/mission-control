@@ -337,11 +337,18 @@
             justify-content: space-between;
             transition: all 0.2s ease;
             cursor: pointer;
+            -webkit-tap-highlight-color: rgba(88, 166, 255, 0.3);
+            touch-action: manipulation;
+            user-select: none;
+            position: relative;
+            z-index: 1;
         }
         
-        .business-row:hover {
+        .business-row:hover,
+        .business-row:active {
             border-color: var(--accent-blue);
             transform: translateX(4px);
+            background-color: var(--bg-tertiary);
         }
         
         .business-info {
@@ -1181,6 +1188,517 @@
         .app-content.visible {
             display: block;
         }
+        
+        /* Agent Ops Styles */
+        .agent-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+        }
+        
+        .agent-card:hover {
+            border-color: var(--accent-blue);
+        }
+        
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--bg-tertiary);
+        }
+        
+        .agent-info {
+            flex: 1;
+        }
+        
+        .agent-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .agent-role {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .agent-status {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        
+        .agent-meta {
+            display: flex;
+            gap: 1.5rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .agent-stat {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .agent-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .agent-stat-value {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .agent-permissions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+        
+        .permission-badge {
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Clickable agent cards */
+        .agent-card {
+            cursor: pointer;
+        }
+        
+        .agent-card.selected {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2);
+        }
+        
+        /* Agent Modal */
+        .agent-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        .agent-modal-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .agent-modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.2s ease;
+        }
+        
+        .agent-modal-backdrop.active .agent-modal {
+            transform: scale(1);
+        }
+        
+        .agent-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .agent-modal-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: var(--bg-tertiary);
+        }
+        
+        .agent-modal-info h3 {
+            margin: 0 0 0.25rem;
+            font-size: 1.25rem;
+        }
+        
+        .agent-modal-info p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .agent-modal-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+        }
+        
+        .agent-modal-close:hover {
+            color: var(--text-primary);
+        }
+        
+        .agent-modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 50vh;
+        }
+        
+        .agent-modal-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .agent-modal-section h4 {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .agent-task-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .agent-task-input input {
+            flex: 1;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+        
+        .agent-task-input input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+        
+        .agent-task-input input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .agent-task-input button {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        
+        .agent-task-input button:hover {
+            background: #4c9aff;
+        }
+        
+        .agent-task-input button:disabled {
+            background: var(--bg-tertiary);
+            cursor: not-allowed;
+        }
+        
+        .agent-current-task {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+        
+        .agent-current-task.idle {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .agent-current-task .task-label {
+            font-size: 0.75rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.25rem;
+        }
+        
+        .agent-history-item {
+            padding: 0.75rem;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .agent-history-item .task-text {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .agent-history-item .task-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Task List Styles */
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .task-item.running {
+            border-color: var(--accent-blue);
+            background: rgba(88, 166, 255, 0.05);
+        }
+        
+        .task-item.failed {
+            border-color: var(--accent-red);
+            background: rgba(248, 81, 73, 0.05);
+        }
+        
+        .task-status-icon {
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+        
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .task-description {
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .task-meta {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .task-agent {
+            background: var(--bg-tertiary);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+        }
+        
+        .task-duration {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+        
+        /* Cron List Styles */
+        .cron-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.875rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cron-item.disabled {
+            opacity: 0.5;
+        }
+        
+        .cron-status {
+            font-size: 1.25rem;
+        }
+        
+        .cron-content {
+            flex: 1;
+        }
+        
+        .cron-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .cron-schedule {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+        
+        .cron-next {
+            text-align: right;
+        }
+        
+        .cron-label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+        
+        .cron-value {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        /* Spin animation for running tasks */
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Section containers */
+        .ops-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .ops-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .ops-section-title {
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Agent Selector */
+        .agent-select-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 0.75rem;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .agent-select-btn:hover {
+            border-color: var(--accent-blue);
+        }
+        
+        .agent-select-btn.selected {
+            border-color: var(--accent-blue);
+            background: rgba(88, 166, 255, 0.1);
+        }
+        
+        .agent-select-btn span {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .agent-select-btn small {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+        
+        /* Control buttons on cards */
+        .agent-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .control-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            transition: all 0.15s ease;
+        }
+        
+        .control-btn:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        
+        .control-btn.danger:hover {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+        
+        .control-btn.success:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+        
+        /* Task controls */
+        .task-controls {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .task-kill-btn {
+            padding: 0.25rem 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .task-kill-btn:hover {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            background: rgba(248, 81, 73, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -1213,6 +1731,57 @@
         </div>
     </div>
     
+    <!-- Spawn Agent Modal -->
+    <div class="cmd-palette-overlay" id="spawnModal">
+        <div class="cmd-palette" style="max-width: 480px;">
+            <div class="cmd-input-wrapper" style="border-bottom: none; padding-bottom: 0;">
+                <i class="bi bi-robot text-primary"></i>
+                <span style="font-weight: 600; font-size: 1.1rem;">Spawn Agent Task</span>
+                <button onclick="closeSpawnModal()" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; margin-left: auto;">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div style="padding: 1rem 1.5rem;">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Select Agent</label>
+                    <div id="agentSelector" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
+                        <div class="agent-select-btn selected" data-agent="rex" onclick="selectAgent(this)">
+                            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Rex&backgroundColor=0369a1" style="width: 28px; height: 28px; border-radius: 6px;">
+                            <span>Rex</span>
+                            <small>Research</small>
+                        </div>
+                        <div class="agent-select-btn" data-agent="dexter" onclick="selectAgent(this)">
+                            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Dexter&backgroundColor=7c3aed" style="width: 28px; height: 28px; border-radius: 6px;">
+                            <span>Dexter</span>
+                            <small>Code</small>
+                        </div>
+                        <div class="agent-select-btn" data-agent="iris" onclick="selectAgent(this)">
+                            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Iris&backgroundColor=be185d" style="width: 28px; height: 28px; border-radius: 6px;">
+                            <span>Iris</span>
+                            <small>Creative</small>
+                        </div>
+                        <div class="agent-select-btn" data-agent="quinn" onclick="selectAgent(this)">
+                            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Quinn&backgroundColor=065f46" style="width: 28px; height: 28px; border-radius: 6px;">
+                            <span>Quinn</span>
+                            <small>Trading</small>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Task Description</label>
+                    <textarea id="spawnTaskInput" placeholder="What should the agent do?" style="width: 100%; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; color: var(--text-primary); font-size: 0.9rem; min-height: 100px; resize: vertical;"></textarea>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button onclick="closeSpawnModal()" style="flex: 1; padding: 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); cursor: pointer;">Cancel</button>
+                    <button onclick="spawnAgent()" style="flex: 2; padding: 0.75rem; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <i class="bi bi-play-fill"></i> Spawn Task
+                    </button>
+                </div>
+                <div id="spawnStatus" style="margin-top: 1rem; padding: 0.75rem; border-radius: 8px; display: none;"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Command Palette -->
     <div class="cmd-palette-overlay" id="cmdPalette">
         <div class="cmd-palette">
@@ -1364,9 +1933,42 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="#" class="nav-link" data-section="arbiter">
+                    <i class="bi bi-box-seam"></i> Arbiter Supply
+                    <span class="health-dot health-yellow"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-section="atlas">
+                    <i class="bi bi-globe2"></i> Atlas Digital
+                    <span class="health-dot" style="background: var(--text-secondary);"></span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="#" class="nav-link" data-section="cannacart">
                     <i class="bi bi-cart3"></i> CannaCart
                     <span class="health-dot health-green"></span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="nav-section">Agent Ops</div>
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-section="agents">
+                    <i class="bi bi-cpu"></i> Agents
+                    <span class="health-dot health-green"></span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-section="tasks">
+                    <i class="bi bi-list-task"></i> Task Log
+                    <span class="notif-badge" id="taskCount">0</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-section="cron">
+                    <i class="bi bi-clock-history"></i> Cron Jobs
                 </a>
             </li>
         </ul>
@@ -1386,6 +1988,16 @@
             <li class="nav-item">
                 <a href="https://fly.io" target="_blank" class="nav-link">
                     <i class="bi bi-cloud"></i> Fly.io
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://cjdropshipping.com" target="_blank" class="nav-link">
+                    <i class="bi bi-truck"></i> CJ Dropship
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://sellercentral.amazon.com" target="_blank" class="nav-link">
+                    <i class="bi bi-amazon"></i> Amazon Seller
                 </a>
             </li>
         </ul>
@@ -1432,7 +2044,312 @@
             </div>
         </div>
         
+        <!-- Business Detail View (hidden by default) -->
+        <div id="businessDetail" style="display: none;">
+            <div id="detailHeader"></div>
+            <div id="detailMetrics"></div>
+            <div id="detailTasks"></div>
+        </div>
+        
+        <!-- ============================================ -->
+        <!-- AGENT OPS SECTIONS -->
+        <!-- ============================================ -->
+        
+        <!-- Agents Section -->
+        <div id="section-agents" class="content-section">
+            <div class="top-bar" style="border-bottom: none; margin-bottom: 0.5rem;">
+                <div class="top-bar-title">
+                    <h4><i class="bi bi-cpu me-2"></i>Agent Registry</h4>
+                    <p>Manage AI agents and their permissions</p>
+                </div>
+                <div class="top-bar-actions">
+                    <button class="btn btn-outline-secondary btn-icon" onclick="fetchAgents()" title="Refresh">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="openSpawnModal()">
+                        <i class="bi bi-plus-lg me-1"></i> Spawn Agent
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Agent Stats -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(88, 166, 255, 0.15); color: var(--accent-blue);">
+                            <i class="bi bi-cpu"></i>
+                        </div>
+                        <div class="stat-label">Total Agents</div>
+                        <div class="stat-value" id="totalAgents">5</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(63, 185, 80, 0.15); color: var(--accent-green);">
+                            <i class="bi bi-activity"></i>
+                        </div>
+                        <div class="stat-label">Active Now</div>
+                        <div class="stat-value" id="activeAgents">1</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(210, 153, 34, 0.15); color: var(--accent-yellow);">
+                            <i class="bi bi-list-check"></i>
+                        </div>
+                        <div class="stat-label">Tasks Today</div>
+                        <div class="stat-value" id="tasksToday">0</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(163, 113, 247, 0.15); color: var(--accent-purple);">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <div class="stat-label">Avg Response</div>
+                        <div class="stat-value" id="avgResponse">—</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-header">
+                <h6><i class="bi bi-robot me-2"></i>Registered Agents</h6>
+                <span class="badge bg-secondary">5 agents</span>
+            </div>
+            
+            <div id="agentsList">
+                <!-- George -->
+                <div class="agent-card" data-agent="george">
+                    <div class="agent-header">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=George&backgroundColor=1e293b&eyes=bulging&mouth=smile01" class="agent-avatar" alt="George">
+                        <div class="agent-info">
+                            <div class="agent-name">George</div>
+                            <div class="agent-role">President • Main Agent</div>
+                        </div>
+                        <div class="agent-status status-live">
+                            <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i>
+                            Active
+                        </div>
+                    </div>
+                    <div class="agent-meta">
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Session</span>
+                            <span class="agent-stat-value">main</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Last Active</span>
+                            <span class="agent-stat-value">Now</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Tasks Today</span>
+                            <span class="agent-stat-value">12</span>
+                        </div>
+                    </div>
+                    <div class="agent-permissions">
+                        <span class="permission-badge">exec</span>
+                        <span class="permission-badge">browser</span>
+                        <span class="permission-badge">message</span>
+                        <span class="permission-badge">cron</span>
+                        <span class="permission-badge">spawn</span>
+                    </div>
+                </div>
+                
+                <!-- Sub-agents -->
+                <div class="agent-card" data-agent="quinn">
+                    <div class="agent-header">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Quinn&backgroundColor=065f46&eyes=eva&mouth=diagram" class="agent-avatar" alt="Quinn">
+                        <div class="agent-info">
+                            <div class="agent-name">Quinn</div>
+                            <div class="agent-role">Quant • Trading & Finance</div>
+                        </div>
+                        <div class="agent-status status-paused">
+                            <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i>
+                            Idle
+                        </div>
+                    </div>
+                    <div class="agent-meta">
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Session</span>
+                            <span class="agent-stat-value">—</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Specialty</span>
+                            <span class="agent-stat-value">Markets</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Tasks Today</span>
+                            <span class="agent-stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-card" data-agent="dexter">
+                    <div class="agent-header">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Dexter&backgroundColor=7c3aed&eyes=robocop&mouth=bite" class="agent-avatar" alt="Dexter">
+                        <div class="agent-info">
+                            <div class="agent-name">Dexter</div>
+                            <div class="agent-role">Developer • Code & Systems</div>
+                        </div>
+                        <div class="agent-status status-paused">
+                            <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i>
+                            Idle
+                        </div>
+                    </div>
+                    <div class="agent-meta">
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Session</span>
+                            <span class="agent-stat-value">—</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Specialty</span>
+                            <span class="agent-stat-value">Code</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Tasks Today</span>
+                            <span class="agent-stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-card" data-agent="rex">
+                    <div class="agent-header">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Rex&backgroundColor=0369a1&eyes=sensor&mouth=square01" class="agent-avatar" alt="Rex">
+                        <div class="agent-info">
+                            <div class="agent-name">Rex</div>
+                            <div class="agent-role">Researcher • Analysis</div>
+                        </div>
+                        <div class="agent-status status-paused">
+                            <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i>
+                            Idle
+                        </div>
+                    </div>
+                    <div class="agent-meta">
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Session</span>
+                            <span class="agent-stat-value">—</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Specialty</span>
+                            <span class="agent-stat-value">Research</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Tasks Today</span>
+                            <span class="agent-stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-card" data-agent="iris">
+                    <div class="agent-header">
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Iris&backgroundColor=be185d&eyes=happy&mouth=smile02" class="agent-avatar" alt="Iris">
+                        <div class="agent-info">
+                            <div class="agent-name">Iris</div>
+                            <div class="agent-role">Creative • Writing & Design</div>
+                        </div>
+                        <div class="agent-status status-paused">
+                            <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i>
+                            Idle
+                        </div>
+                    </div>
+                    <div class="agent-meta">
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Session</span>
+                            <span class="agent-stat-value">—</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Specialty</span>
+                            <span class="agent-stat-value">Creative</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Tasks Today</span>
+                            <span class="agent-stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tasks Section -->
+        <div id="section-tasks" class="content-section">
+            <div class="top-bar" style="border-bottom: none; margin-bottom: 0.5rem;">
+                <div class="top-bar-title">
+                    <h4><i class="bi bi-list-task me-2"></i>Task Log</h4>
+                    <p>Recent agent actions and task history</p>
+                </div>
+                <div class="top-bar-actions">
+                    <button class="btn btn-outline-secondary btn-icon" onclick="fetchTasks()" title="Refresh">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="section-header">
+                <h6><div class="live-dot"></div>Live Task Feed</h6>
+                <span class="badge bg-secondary" id="taskBadge">0 tasks</span>
+            </div>
+            
+            <div id="tasksList">
+                <div class="text-secondary p-3 text-center">
+                    <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                    <p class="mt-2 mb-0">No tasks logged yet</p>
+                    <small>Tasks will appear here as agents complete work</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cron Section -->
+        <div id="section-cron" class="content-section">
+            <div class="top-bar" style="border-bottom: none; margin-bottom: 0.5rem;">
+                <div class="top-bar-title">
+                    <h4><i class="bi bi-clock-history me-2"></i>Cron Jobs</h4>
+                    <p>Scheduled tasks and automated workflows</p>
+                </div>
+                <div class="top-bar-actions">
+                    <button class="btn btn-outline-secondary btn-icon" onclick="fetchCron()" title="Refresh">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="section-header">
+                <h6><i class="bi bi-calendar-event me-2"></i>Scheduled Jobs</h6>
+            </div>
+            
+            <div id="cronList">
+                <div class="cron-item">
+                    <div class="cron-status">
+                        <i class="bi bi-play-circle-fill text-success"></i>
+                    </div>
+                    <div class="cron-content">
+                        <div class="cron-name">Mission Control Sync</div>
+                        <div class="cron-schedule">Every 30 minutes</div>
+                    </div>
+                    <div class="cron-next">
+                        <span class="cron-label">Last run</span>
+                        <span class="cron-value">Just now</span>
+                    </div>
+                </div>
+                
+                <div class="cron-item">
+                    <div class="cron-status">
+                        <i class="bi bi-play-circle-fill text-success"></i>
+                    </div>
+                    <div class="cron-content">
+                        <div class="cron-name">Heartbeat Check</div>
+                        <div class="cron-schedule">Every 30 minutes</div>
+                    </div>
+                    <div class="cron-next">
+                        <span class="cron-label">Next run</span>
+                        <span class="cron-value">~25m</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ============================================ -->
+
         <!-- Dashboard Section -->
+        <div id="mainDashboard">
         <div id="section-dashboard" class="content-section active">
         
         <!-- Quick Stats Bar -->
@@ -1518,7 +2435,7 @@
                             </div>
                             <div class="api-widget-metrics">
                                 <div class="api-metric">
-                                    <div class="api-metric-value">25</div>
+                                    <div class="api-metric-value">100</div>
                                     <div class="api-metric-label">Leads</div>
                                 </div>
                                 <div class="api-metric">
@@ -1526,7 +2443,7 @@
                                     <div class="api-metric-label">Credits</div>
                                 </div>
                                 <div class="api-metric">
-                                    <div class="api-metric-value">1</div>
+                                    <div class="api-metric-value">4</div>
                                     <div class="api-metric-label">Lists</div>
                                 </div>
                             </div>
@@ -1564,7 +2481,7 @@
                 </div>
                 
                 <!-- CONDUIT -->
-                <div class="business-row">
+                <div class="business-row" data-business="conduit" onclick="showBusinessDetail('conduit')" style="cursor:pointer;">
                     <div class="business-info">
                         <div class="business-icon" style="background: rgba(88, 166, 255, 0.15); color: var(--accent-blue);">
                             <i class="bi bi-envelope"></i>
@@ -1577,7 +2494,7 @@
                     <div class="business-metrics">
                         <div class="metric">
                             <div class="metric-label">Leads</div>
-                            <div class="metric-value">25</div>
+                            <div class="metric-value">100</div>
                         </div>
                         <div class="metric">
                             <div class="metric-label">Pipeline</div>
@@ -1590,7 +2507,7 @@
                 </div>
                 
                 <!-- TRADECRAFT -->
-                <div class="business-row">
+                <div class="business-row" data-business="tradecraft" onclick="showBusinessDetail('tradecraft')" style="cursor:pointer;">
                     <div class="business-info">
                         <div class="business-icon" style="background: rgba(63, 185, 80, 0.15); color: var(--accent-green);">
                             <i class="bi bi-graph-up-arrow"></i>
@@ -1616,7 +2533,7 @@
                 </div>
                 
                 <!-- LIFTEDPICK -->
-                <div class="business-row">
+                <div class="business-row" data-business="liftedpick" onclick="showBusinessDetail('liftedpick')" style="cursor:pointer;">
                     <div class="business-info">
                         <div class="business-icon" style="background: rgba(163, 113, 247, 0.15); color: #a371f7;">
                             <i class="bi bi-upc-scan"></i>
@@ -1641,8 +2558,60 @@
                     </div>
                 </div>
                 
+                <!-- ARBITER SUPPLY -->
+                <div class="business-row" data-business="arbiter_supply" onclick="showBusinessDetail('arbiter_supply')" style="cursor:pointer;">
+                    <div class="business-info">
+                        <div class="business-icon" style="background: rgba(248, 81, 73, 0.15); color: var(--accent-red);">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        <div>
+                            <div class="business-name">Arbiter Supply</div>
+                            <div class="business-type">E-commerce • Dropship</div>
+                        </div>
+                    </div>
+                    <div class="business-metrics">
+                        <div class="metric">
+                            <div class="metric-label">Products</div>
+                            <div class="metric-value">52</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Revenue</div>
+                            <div class="metric-value">$0</div>
+                        </div>
+                        <span class="status-badge status-warming">
+                            <span class="health-dot health-yellow"></span> Launching
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ATLAS DIGITAL -->
+                <div class="business-row" data-business="atlas_digital" onclick="showBusinessDetail('atlas_digital')" style="cursor:pointer;">
+                    <div class="business-info">
+                        <div class="business-icon" style="background: rgba(139, 148, 158, 0.15); color: var(--text-secondary);">
+                            <i class="bi bi-globe2"></i>
+                        </div>
+                        <div>
+                            <div class="business-name">Atlas Digital</div>
+                            <div class="business-type">SEO • Programmatic</div>
+                        </div>
+                    </div>
+                    <div class="business-metrics">
+                        <div class="metric">
+                            <div class="metric-label">Sites</div>
+                            <div class="metric-value">0</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-label">Traffic</div>
+                            <div class="metric-value">—</div>
+                        </div>
+                        <span class="status-badge" style="background: rgba(139, 148, 158, 0.15); color: var(--text-secondary);">
+                            <span class="health-dot" style="background: var(--text-secondary);"></span> On Hold
+                        </span>
+                    </div>
+                </div>
+
                 <!-- CANNACART -->
-                <div class="business-row">
+                <div class="business-row" data-business="cannacart" onclick="showBusinessDetail('cannacart')" style="cursor:pointer;">
                     <div class="business-info">
                         <div class="business-icon" style="background: rgba(210, 153, 34, 0.15); color: var(--accent-yellow);">
                             <i class="bi bi-cart3"></i>
@@ -2001,8 +2970,48 @@
                 </div>
             </div>
         </div>
+        </div><!-- /mainDashboard -->
         
     </main>
+
+    <!-- Agent Modal -->
+    <div class="agent-modal-backdrop" id="agentModal">
+        <div class="agent-modal">
+            <div class="agent-modal-header">
+                <img src="" class="agent-modal-avatar" id="modalAgentAvatar" alt="">
+                <div class="agent-modal-info">
+                    <h3 id="modalAgentName">Agent Name</h3>
+                    <p id="modalAgentRole">Role • Specialty</p>
+                </div>
+                <button class="agent-modal-close" id="agentModalClose">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            <div class="agent-modal-body">
+                <div class="agent-modal-section">
+                    <h4>Send Task</h4>
+                    <div class="agent-task-input">
+                        <input type="text" id="agentTaskInput" placeholder="Describe the task...">
+                        <button id="sendAgentTask">Send</button>
+                    </div>
+                </div>
+                
+                <div class="agent-modal-section">
+                    <h4>Current Work</h4>
+                    <div class="agent-current-task idle" id="agentCurrentTask">
+                        No active task
+                    </div>
+                </div>
+                
+                <div class="agent-modal-section">
+                    <h4>Recent Tasks</h4>
+                    <div id="agentTaskHistory">
+                        <div class="text-secondary" style="font-size: 0.85rem;">No recent tasks</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Chat Widget -->
     <button class="chat-fab" id="chatFab" title="Chat with George">
@@ -2200,53 +3209,100 @@
         const chatMessages = document.getElementById('chatMessages');
         const chatTyping = document.getElementById('chatTyping');
         
-        // Relay config - connects to Cloudflare Worker
-        const RELAY_URL = 'https://mc-relay.georgebot253.workers.dev';
+        // Mission Control API
+        const MC_API = 'https://mission-control-api.georgebot253.workers.dev';
         
-        // Load chat history
-        let chatHistory = [];
-        let lastPollTime = 0;
+        // Load chat history from localStorage
+        let chatHistory = JSON.parse(localStorage.getItem('mc_chat_history') || '[]');
+        
+        // Save chat history
+        function saveChatHistory() {
+            // Keep only last 100 messages locally
+            if (chatHistory.length > 100) {
+                chatHistory = chatHistory.slice(-100);
+            }
+            localStorage.setItem('mc_chat_history', JSON.stringify(chatHistory));
+        }
         
         // Initialize chat
         async function initChat() {
-            // Always fetch messages from relay first
+            // Load message history from API
             try {
-                const res = await fetch(`${RELAY_URL}/messages`);
-                const data = await res.json();
-                chatHistory = data.messages || [];
+                const res = await fetch(`${MC_API}/api/messages/history?limit=50`);
+                const serverMessages = await res.json();
+                
+                // Merge server messages with local (dedupe by id)
+                const localIds = new Set(chatHistory.map(m => m.id).filter(Boolean));
+                const newMessages = serverMessages.filter(m => !localIds.has(m.id));
+                
+                if (newMessages.length > 0) {
+                    // Convert server message format to chat format
+                    newMessages.forEach(m => {
+                        chatHistory.push({
+                            id: m.id,
+                            sender: m.from === 'Anthony' ? 'user' : 'george',
+                            text: m.text,
+                            time: m.created_at,
+                            status: m.status
+                        });
+                    });
+                    saveChatHistory();
+                }
             } catch (e) {
                 console.log('Could not fetch messages:', e);
-                chatHistory = [];
             }
             
             // Show welcome message only if truly empty
             if (chatHistory.length === 0) {
                 chatHistory.push({
                     sender: 'george',
-                    text: "Hey! 👋 Mission Control chat is live and connected to Telegram.\n\nMessages you send here come straight to me. Try: \"check bot status\" or \"what's next?\"",
+                    text: "Hey! 👋 Mission Control chat is connected.\n\nMessages you send here are queued for George. He checks regularly and responds via Telegram.\n\nTry: \"status update\" or \"what's next?\"",
                     time: new Date().toISOString()
                 });
+                saveChatHistory();
             }
             renderMessages();
             
-            // Start polling for new messages every 3 seconds
-            setInterval(pollMessages, 3000);
+            // Poll for new messages every 2 seconds (near real-time)
+            setInterval(pollMessages, 2000);
         }
         
-        // Poll for new messages
+        // Poll for new messages and status updates
         async function pollMessages() {
             try {
-                const res = await fetch(`${RELAY_URL}/messages`);
-                const data = await res.json();
-                if (data.messages) {
-                    // Check if there are new messages by comparing last message time
-                    const serverLast = data.messages[data.messages.length - 1];
-                    const localLast = chatHistory[chatHistory.length - 1];
+                const res = await fetch(`${MC_API}/api/messages/history?limit=30`);
+                const serverMessages = await res.json();
+                
+                let updated = false;
+                const localIds = new Set(chatHistory.map(m => m.id).filter(Boolean));
+                
+                serverMessages.forEach(sm => {
+                    const local = chatHistory.find(m => m.id === sm.id);
                     
-                    if (!localLast || !serverLast || serverLast.time !== localLast.time || data.messages.length !== chatHistory.length) {
-                        chatHistory = data.messages;
-                        renderMessages();
+                    if (local) {
+                        // Update status of existing messages
+                        if (local.status !== sm.status) {
+                            local.status = sm.status;
+                            updated = true;
+                        }
+                    } else if (!localIds.has(sm.id)) {
+                        // Add new messages (including from George)
+                        chatHistory.push({
+                            id: sm.id,
+                            sender: sm.from === 'Anthony' ? 'user' : 'george',
+                            text: sm.text,
+                            time: sm.created_at,
+                            status: sm.status
+                        });
+                        updated = true;
                     }
+                });
+                
+                if (updated) {
+                    // Sort by time
+                    chatHistory.sort((a, b) => new Date(a.time) - new Date(b.time));
+                    renderMessages();
+                    saveChatHistory();
                 }
             } catch (e) {
                 console.log('Poll error:', e);
@@ -2255,13 +3311,16 @@
         
         // Render messages
         function renderMessages() {
-            chatMessages.innerHTML = chatHistory.map(msg => `
-                <div class="chat-message ${msg.sender}">
-                    ${msg.sender === 'george' ? '<span class="msg-sender">George</span>' : ''}
-                    ${formatMessage(msg.text)}
-                    <span class="msg-time">${formatTime(msg.time)}</span>
-                </div>
-            `).join('');
+            chatMessages.innerHTML = chatHistory.map(msg => {
+                const statusIcon = msg.status === 'read' ? '✓✓' : msg.status === 'pending' ? '⏳' : '';
+                return `
+                    <div class="chat-message ${msg.sender}">
+                        ${msg.sender === 'george' ? '<span class="msg-sender">George</span>' : ''}
+                        ${formatMessage(msg.text)}
+                        <span class="msg-time">${formatTime(msg.time)} ${statusIcon}</span>
+                    </div>
+                `;
+            }).join('');
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
         
@@ -2303,23 +3362,30 @@
             // Show typing indicator
             chatTyping.classList.add('active');
             
-            // Send to relay (which sends to Telegram)
+            // Send to Mission Control API (George polls for messages)
             try {
-                await fetch(`${RELAY_URL}/send`, {
+                const res = await fetch('https://mission-control-api.georgebot253.workers.dev/api/messages', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
+                    body: JSON.stringify({ 
+                        from: 'Anthony',
+                        text: text,
+                        agent: 'george'
+                    })
                 });
+                
+                const data = await res.json();
                 
                 // Add acknowledgment
                 setTimeout(() => {
                     chatTyping.classList.remove('active');
                     chatHistory.push({
                         sender: 'george',
-                        text: "📨 Message sent to George via Telegram. Response incoming...",
+                        text: `📨 Message queued (${data.message_id}). George checks every sync cycle.`,
                         time: new Date().toISOString()
                     });
                     renderMessages();
+                    saveChatHistory();
                 }, 500);
                 
             } catch (error) {
@@ -2504,6 +3570,893 @@
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').catch(() => {});
         }
+
+        // ============================================
+        // BUSINESS DETAIL VIEW
+        // ============================================
+        let currentBusiness = null;
+        
+        function showBusinessDetail(businessId) {
+            currentBusiness = businessId;
+            
+            // Push state for back button support
+            history.pushState({ view: 'detail', business: businessId }, '', `#${businessId}`);
+            
+            // Hide main content, show detail view
+            document.getElementById('mainDashboard').style.display = 'none';
+            document.getElementById('businessDetail').style.display = 'block';
+            
+            // Fetch and render business detail
+            fetchBusinessDetail(businessId);
+        }
+        
+        function hideBusinessDetail() {
+            document.getElementById('mainDashboard').style.display = 'block';
+            document.getElementById('businessDetail').style.display = 'none';
+            currentBusiness = null;
+            
+            // Update URL
+            history.pushState({ view: 'dashboard' }, '', window.location.pathname);
+        }
+        
+        // Handle browser back button
+        window.addEventListener('popstate', function(e) {
+            if (e.state && e.state.view === 'detail') {
+                // Going forward to detail
+                showBusinessDetail(e.state.business);
+            } else {
+                // Going back to dashboard
+                document.getElementById('mainDashboard').style.display = 'block';
+                document.getElementById('businessDetail').style.display = 'none';
+                currentBusiness = null;
+            }
+        });
+        
+        // Check URL hash on load
+        if (window.location.hash) {
+            const bizId = window.location.hash.slice(1);
+            if (bizId) {
+                setTimeout(() => showBusinessDetail(bizId), 100);
+            }
+        }
+        
+        async function fetchBusinessDetail(businessId) {
+            try {
+                const [bizRes, actRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/businesses`),
+                    fetch(`${API_BASE}/api/activity`)
+                ]);
+                
+                const businesses = await bizRes.json();
+                const allActivity = await actRes.json();
+                
+                const business = businesses.find(b => b.id === businessId);
+                const activity = allActivity.filter(a => 
+                    a.business.toLowerCase().replace(/ /g, '_') === businessId ||
+                    a.business.toLowerCase().replace(/_/g, ' ') === businessId.replace(/_/g, ' ')
+                );
+                
+                renderBusinessDetail(business, activity);
+            } catch (err) {
+                console.error('Error fetching business detail:', err);
+            }
+        }
+        
+        function renderBusinessDetail(business, activity) {
+            if (!business) return;
+            
+            const icons = {
+                'conduit': 'bi-envelope',
+                'tradecraft': 'bi-graph-up-arrow',
+                'liftedpick': 'bi-upc-scan',
+                'arbiter_supply': 'bi-box-seam',
+                'atlas_digital': 'bi-globe2',
+                'cannacart': 'bi-cart3'
+            };
+            
+            const colors = {
+                'conduit': 'var(--accent-blue)',
+                'tradecraft': 'var(--accent-green)',
+                'liftedpick': '#a371f7',
+                'arbiter_supply': 'var(--accent-red)',
+                'atlas_digital': 'var(--text-secondary)',
+                'cannacart': 'var(--accent-yellow)'
+            };
+            
+            const healthColors = {
+                'green': 'var(--accent-green)',
+                'yellow': 'var(--accent-yellow)',
+                'blue': 'var(--accent-blue)',
+                'gray': 'var(--text-secondary)'
+            };
+
+            // Metric labels for display
+            const metricLabels = business.metricLabels || {
+                leads: 'Leads', pipeline: 'Pipeline', mrr: 'MRR', reply_rate: 'Reply Rate',
+                daily_pnl: 'Daily P&L', win_rate: 'Win Rate', trades_today: 'Trades',
+                account_balance: 'Balance', max_drawdown: 'Max Drawdown',
+                scans: 'Scans', accuracy: 'Accuracy', orders_verified: 'Verified',
+                products: 'Products', revenue: 'Revenue', orders: 'Orders', margin: 'Margin',
+                stores: 'Stores', time_saved: 'Time Saved', orders_generated: 'Orders',
+                sites: 'Sites', traffic: 'Traffic', keywords_ranked: 'Keywords'
+            };
+            
+            // Render header
+            document.getElementById('detailHeader').innerHTML = `
+                <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+                    <button onclick="hideBusinessDetail()" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-left"></i> Back
+                    </button>
+                    <div class="business-icon" style="background: ${colors[business.id]}22; color: ${colors[business.id]}; width: 48px; height: 48px; font-size: 1.5rem;">
+                        <i class="bi ${icons[business.id] || 'bi-briefcase'}"></i>
+                    </div>
+                    <div>
+                        <h3 class="mb-0">${business.name}</h3>
+                        <span class="text-secondary">${business.type || ''}</span>
+                    </div>
+                    <span class="status-badge ms-auto" style="background: ${healthColors[business.health]}22; color: ${healthColors[business.health]};">
+                        <span class="health-dot" style="background: ${healthColors[business.health]};"></span>
+                        ${business.status}
+                    </span>
+                </div>
+            `;
+            
+            // Render metrics in a nice grid
+            const metricEntries = Object.entries(business.metrics || {});
+            document.getElementById('detailMetrics').innerHTML = `
+                <div class="card mb-4">
+                    <div class="card-header"><i class="bi bi-speedometer2 me-2"></i>Key Metrics</div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            ${metricEntries.length > 0 ? metricEntries.map(([key, val]) => `
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="p-3 rounded" style="background: var(--bg-tertiary);">
+                                        <div class="text-secondary small mb-1">${metricLabels[key] || key.replace(/_/g, ' ').toUpperCase()}</div>
+                                        <div class="h4 mb-0" style="color: ${colors[business.id] || 'var(--text-primary)'};">${val}</div>
+                                    </div>
+                                </div>
+                            `).join('') : '<div class="col-12 text-secondary">No metrics available</div>'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Render tasks (from activity that aren't done)
+            const tasks = activity.filter(a => !a.done);
+            const completed = activity.filter(a => a.done);
+            
+            document.getElementById('detailTasks').innerHTML = `
+                <!-- To-Do / Needs Done -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="bi bi-circle text-warning me-2"></i>
+                        <span>Needs Done</span>
+                        <span class="badge bg-warning text-dark ms-auto">${tasks.length}</span>
+                    </div>
+                    <div class="card-body p-0">
+                        ${tasks.length > 0 ? `
+                            <ul class="list-group list-group-flush">
+                                ${tasks.map(t => `
+                                    <li class="list-group-item bg-transparent border-secondary d-flex align-items-start gap-2 py-3">
+                                        <i class="bi bi-circle text-warning mt-1"></i>
+                                        <span>${t.text.replace(/\*\*/g, '')}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        ` : '<div class="p-3 text-secondary">No pending tasks 🎉</div>'}
+                    </div>
+                </div>
+                
+                <!-- Completed -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        <span>Completed</span>
+                        <span class="badge bg-success ms-auto">${completed.length}</span>
+                    </div>
+                    <div class="card-body p-0">
+                        ${completed.length > 0 ? `
+                            <ul class="list-group list-group-flush">
+                                ${completed.map(t => `
+                                    <li class="list-group-item bg-transparent border-secondary d-flex align-items-start gap-2 py-3 text-secondary">
+                                        <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                                        <span><s>${t.text.replace(/\*\*/g, '')}</s></span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        ` : '<div class="p-3 text-secondary">Nothing completed yet</div>'}
+                    </div>
+                </div>
+
+                <!-- Activity Log -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center">
+                        <i class="bi bi-activity text-info me-2"></i>
+                        <span>Activity Log</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            ${activity.slice(0, 10).map(a => `
+                                <li class="list-group-item bg-transparent border-secondary d-flex align-items-start gap-2 py-2">
+                                    <i class="bi ${a.done ? 'bi-check-circle-fill text-success' : 'bi-clock text-warning'} mt-1"></i>
+                                    <div>
+                                        <div>${a.text.replace(/\*\*/g, '')}</div>
+                                        <small class="text-secondary">${a.done ? 'Completed' : 'Pending'}</small>
+                                    </div>
+                                </li>
+                            `).join('')}
+                            ${activity.length === 0 ? '<li class="list-group-item bg-transparent text-secondary">No activity yet</li>' : ''}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================================
+        // LIVE DATA API
+        // ============================================
+        const API_BASE = 'https://mission-control-api.georgebot253.workers.dev';
+        
+        // Business icon mapping
+        const businessIcons = {
+            'conduit': 'bi-envelope',
+            'tradecraft': 'bi-graph-up-arrow',
+            'liftedpick': 'bi-upc-scan',
+            'arbiter_supply': 'bi-box-seam',
+            'atlas_digital': 'bi-globe2',
+            'cannacart': 'bi-cart3'
+        };
+        
+        const businessColors = {
+            'conduit': 'var(--accent-blue)',
+            'tradecraft': 'var(--accent-green)',
+            'liftedpick': '#a371f7',
+            'arbiter_supply': 'var(--accent-red)',
+            'atlas_digital': 'var(--text-secondary)',
+            'cannacart': 'var(--accent-yellow)'
+        };
+        
+        const healthColors = {
+            'green': 'var(--accent-green)',
+            'yellow': 'var(--accent-yellow)',
+            'blue': 'var(--accent-blue)',
+            'gray': 'var(--text-secondary)',
+            'red': 'var(--accent-red)'
+        };
+
+        // Fetch and render businesses
+        async function fetchBusinesses() {
+            try {
+                const res = await fetch(`${API_BASE}/api/businesses`);
+                const businesses = await res.json();
+                renderBusinesses(businesses);
+            } catch (err) {
+                console.warn('Could not fetch live data, using static');
+            }
+        }
+
+        function renderBusinesses(businesses) {
+            const container = document.querySelector('.section-header + .business-row')?.parentElement;
+            if (!container) return;
+
+            // Find all business rows after the section header
+            const existingRows = container.querySelectorAll('.business-row');
+            
+            businesses.forEach((biz, idx) => {
+                if (existingRows[idx]) {
+                    // Update existing row
+                    const row = existingRows[idx];
+                    const nameEl = row.querySelector('.business-name');
+                    const typeEl = row.querySelector('.business-type');
+                    const healthDot = row.querySelector('.health-dot');
+                    const statusBadge = row.querySelector('.status-badge');
+                    
+                    if (nameEl) nameEl.textContent = biz.name;
+                    if (typeEl) typeEl.textContent = biz.type;
+                    if (healthDot) healthDot.style.background = healthColors[biz.health] || healthColors.gray;
+                    if (statusBadge) {
+                        const statusText = statusBadge.childNodes[statusBadge.childNodes.length - 1];
+                        if (statusText) statusText.textContent = ' ' + biz.status;
+                    }
+                    
+                    // Update metrics
+                    const metrics = row.querySelectorAll('.metric');
+                    const metricKeys = Object.keys(biz.metrics || {});
+                    metrics.forEach((m, i) => {
+                        if (metricKeys[i]) {
+                            const val = m.querySelector('.metric-value');
+                            if (val) val.textContent = biz.metrics[metricKeys[i]];
+                        }
+                    });
+                }
+            });
+        }
+
+        // Fetch and render activity
+        async function fetchActivity() {
+            try {
+                const res = await fetch(`${API_BASE}/api/activity`);
+                const activity = await res.json();
+                renderActivity(activity);
+            } catch (err) {
+                console.warn('Could not fetch activity');
+            }
+        }
+
+        function renderActivity(items) {
+            const feed = document.getElementById('activityFeed');
+            if (!feed || items.length === 0) return;
+
+            const icons = {
+                'CONDUIT': 'bi-envelope',
+                'TRADECRAFT': 'bi-graph-up-arrow',
+                'LIFTEDPICK': 'bi-upc-scan',
+                'ARBITER SUPPLY': 'bi-box-seam',
+                'ATLAS DIGITAL': 'bi-globe2',
+                'CANNACART': 'bi-cart3'
+            };
+
+            feed.innerHTML = items.slice(0, 10).map(item => `
+                <div class="activity-item">
+                    <div class="activity-icon ${item.done ? 'text-success' : 'text-warning'}">
+                        <i class="bi ${item.done ? 'bi-check-circle-fill' : (icons[item.business] || 'bi-circle')}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">${item.text.replace(/\*\*/g, '')}</div>
+                        <div class="activity-meta">
+                            <span class="activity-business">${item.business}</span>
+                            <span>Live</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            console.log('Activity feed updated with', items.length, 'items');
+        }
+
+        // Fetch and render stats
+        async function fetchStats() {
+            try {
+                const res = await fetch(`${API_BASE}/api/stats`);
+                const stats = await res.json();
+                
+                // Update last sync time
+                if (stats.last_sync) {
+                    const syncTime = new Date(stats.last_sync);
+                    const timeAgo = Math.floor((Date.now() - syncTime) / 60000);
+                    const syncEl = document.getElementById('lastSync');
+                    if (syncEl) {
+                        syncEl.textContent = timeAgo < 1 ? 'Just now' : `${timeAgo}m ago`;
+                    }
+                }
+            } catch (err) {
+                console.warn('Could not fetch stats');
+            }
+        }
+
+        // ============================================
+        // CONTROL PLANE (Phase 2)
+        // ============================================
+        
+        let selectedAgent = 'rex';
+        
+        function openSpawnModal() {
+            document.getElementById('spawnModal').classList.add('active');
+            document.getElementById('spawnTaskInput').focus();
+        }
+        
+        function closeSpawnModal() {
+            document.getElementById('spawnModal').classList.remove('active');
+            document.getElementById('spawnTaskInput').value = '';
+            document.getElementById('spawnStatus').style.display = 'none';
+        }
+        
+        function selectAgent(btn) {
+            document.querySelectorAll('.agent-select-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedAgent = btn.dataset.agent;
+        }
+        
+        async function spawnAgent() {
+            const task = document.getElementById('spawnTaskInput').value.trim();
+            if (!task) {
+                showSpawnStatus('Please enter a task description', 'error');
+                return;
+            }
+            
+            showSpawnStatus('Queuing task...', 'pending');
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/commands`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'spawn',
+                        agent: selectedAgent,
+                        task: task
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.ok) {
+                    showSpawnStatus(`✓ Task queued for ${selectedAgent.charAt(0).toUpperCase() + selectedAgent.slice(1)}. George will execute on next sync (~30 min or sooner).`, 'success');
+                    document.getElementById('spawnTaskInput').value = '';
+                    
+                    // Add to task list immediately as pending
+                    const tasksList = document.getElementById('tasksList');
+                    const newTask = document.createElement('div');
+                    newTask.className = 'task-item';
+                    newTask.innerHTML = `
+                        <div class="task-status-icon">
+                            <i class="bi bi-hourglass text-warning"></i>
+                        </div>
+                        <div class="task-content">
+                            <div class="task-description">${task}</div>
+                            <div class="task-meta">
+                                <span class="task-agent">${selectedAgent}</span>
+                                <span class="task-time">Queued</span>
+                            </div>
+                        </div>
+                    `;
+                    tasksList.insertBefore(newTask, tasksList.firstChild);
+                } else {
+                    showSpawnStatus('Failed to queue task', 'error');
+                }
+            } catch (err) {
+                showSpawnStatus('Error: ' + err.message, 'error');
+            }
+        }
+        
+        function showSpawnStatus(message, type) {
+            const status = document.getElementById('spawnStatus');
+            status.style.display = 'block';
+            status.textContent = message;
+            status.style.background = type === 'success' ? 'rgba(63, 185, 80, 0.15)' : 
+                                     type === 'error' ? 'rgba(248, 81, 73, 0.15)' : 
+                                     'rgba(88, 166, 255, 0.15)';
+            status.style.color = type === 'success' ? 'var(--accent-green)' : 
+                                type === 'error' ? 'var(--accent-red)' : 
+                                'var(--accent-blue)';
+        }
+        
+        async function killTask(taskId) {
+            if (!confirm('Kill this task?')) return;
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/commands`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'kill',
+                        target_task_id: taskId
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.ok) {
+                    alert('Kill command queued');
+                    fetchTasks();
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+        
+        async function pauseAgent(agentId) {
+            try {
+                const res = await fetch(`${API_BASE}/api/commands`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'pause',
+                        agent: agentId
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.ok) {
+                    alert(`Pause command queued for ${agentId}`);
+                    fetchAgents();
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+        
+        async function resumeAgent(agentId) {
+            try {
+                const res = await fetch(`${API_BASE}/api/commands`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'resume',
+                        agent: agentId
+                    })
+                });
+                
+                const data = await res.json();
+                if (data.ok) {
+                    alert(`Resume command queued for ${agentId}`);
+                    fetchAgents();
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+        
+        // Close modal on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSpawnModal();
+            }
+        });
+        
+        // Close modal on backdrop click
+        document.getElementById('spawnModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'spawnModal') closeSpawnModal();
+        });
+
+        // ============================================
+        // AGENT OPS SYSTEM
+        // ============================================
+        
+        // Fetch agents
+        async function fetchAgents() {
+            try {
+                const res = await fetch(`${API_BASE}/api/agents`);
+                const agents = await res.json();
+                renderAgents(agents);
+            } catch (err) {
+                console.warn('Could not fetch agents');
+            }
+        }
+        
+        // Fetch tasks
+        async function fetchTasks() {
+            try {
+                const res = await fetch(`${API_BASE}/api/tasks?limit=50`);
+                const tasks = await res.json();
+                renderTasks(tasks);
+                const badge = document.getElementById('taskCount');
+                if (badge) badge.textContent = tasks.length;
+            } catch (err) {
+                console.warn('Could not fetch tasks');
+            }
+        }
+        
+        // Fetch cron jobs
+        async function fetchCron() {
+            try {
+                const res = await fetch(`${API_BASE}/api/cron`);
+                const jobs = await res.json();
+                renderCron(jobs);
+            } catch (err) {
+                console.warn('Could not fetch cron');
+            }
+        }
+        
+        // Render agents
+        function renderAgents(agents) {
+            const container = document.getElementById('agentsList');
+            if (!container) return;
+            
+            if (agents.length === 0) {
+                container.innerHTML = '<div class="text-secondary p-3">No agents registered yet</div>';
+                return;
+            }
+            
+            container.innerHTML = agents.map(agent => `
+                <div class="agent-card" data-agent="${agent.id}">
+                    <div class="agent-header">
+                        <img src="${agent.avatar || 'https://api.dicebear.com/7.x/bottts/svg?seed=' + agent.name}" class="agent-avatar" alt="${agent.name}">
+                        <div class="agent-info">
+                            <div class="agent-name">${agent.name}</div>
+                            <div class="agent-role">${agent.role || 'Agent'}</div>
+                        </div>
+                        <div class="agent-status ${agent.status === 'active' ? 'status-live' : 'status-paused'}">
+                            <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i>
+                            ${agent.status || 'idle'}
+                        </div>
+                    </div>
+                    <div class="agent-meta">
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Session</span>
+                            <span class="agent-stat-value">${agent.current_session || 'None'}</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Last Active</span>
+                            <span class="agent-stat-value">${agent.last_active ? timeAgo(agent.last_active) : 'Never'}</span>
+                        </div>
+                        <div class="agent-stat">
+                            <span class="agent-stat-label">Tasks Today</span>
+                            <span class="agent-stat-value">${agent.tasks_today || 0}</span>
+                        </div>
+                    </div>
+                    ${agent.permissions ? `
+                        <div class="agent-permissions">
+                            ${agent.permissions.map(p => `<span class="permission-badge">${p}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+        
+        // Render tasks
+        function renderTasks(tasks) {
+            const container = document.getElementById('tasksList');
+            if (!container) return;
+            
+            if (tasks.length === 0) {
+                container.innerHTML = '<div class="text-secondary p-3">No tasks logged yet</div>';
+                return;
+            }
+            
+            container.innerHTML = tasks.map(task => `
+                <div class="task-item ${task.status || 'pending'}">
+                    <div class="task-status-icon">
+                        <i class="bi ${task.status === 'completed' ? 'bi-check-circle-fill text-success' : 
+                                      task.status === 'failed' ? 'bi-x-circle-fill text-danger' :
+                                      task.status === 'running' ? 'bi-arrow-repeat text-info spin' :
+                                      'bi-circle text-secondary'}"></i>
+                    </div>
+                    <div class="task-content">
+                        <div class="task-description">${task.description || task.text || 'Task'}</div>
+                        <div class="task-meta">
+                            <span class="task-agent">${task.agent || 'Unknown'}</span>
+                            <span class="task-time">${task.logged_at ? timeAgo(task.logged_at) : ''}</span>
+                        </div>
+                    </div>
+                    ${task.duration ? `<div class="task-duration">${task.duration}</div>` : ''}
+                </div>
+            `).join('');
+        }
+        
+        // Render cron jobs
+        function renderCron(jobs) {
+            const container = document.getElementById('cronList');
+            if (!container) return;
+            
+            if (jobs.length === 0) {
+                container.innerHTML = '<div class="text-secondary p-3">No cron jobs configured</div>';
+                return;
+            }
+            
+            container.innerHTML = jobs.map(job => `
+                <div class="cron-item ${job.enabled !== false ? '' : 'disabled'}">
+                    <div class="cron-status">
+                        <i class="bi ${job.enabled !== false ? 'bi-play-circle-fill text-success' : 'bi-pause-circle-fill text-secondary'}"></i>
+                    </div>
+                    <div class="cron-content">
+                        <div class="cron-name">${job.name || job.id}</div>
+                        <div class="cron-schedule">${job.schedule?.expr || job.schedule?.kind || 'Unknown schedule'}</div>
+                    </div>
+                    <div class="cron-next">
+                        <span class="cron-label">Next run</span>
+                        <span class="cron-value">${job.next_run ? timeAgo(job.next_run, true) : 'N/A'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Time ago helper
+        function timeAgo(date, future = false) {
+            const now = Date.now();
+            const time = new Date(date).getTime();
+            const diff = future ? time - now : now - time;
+            const mins = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (mins < 1) return future ? 'Soon' : 'Just now';
+            if (mins < 60) return `${mins}m ${future ? '' : 'ago'}`;
+            if (hours < 24) return `${hours}h ${future ? '' : 'ago'}`;
+            return `${days}d ${future ? '' : 'ago'}`;
+        }
+        
+        // Initialize Agent Ops when section is shown
+        function initAgentOps() {
+            fetchAgents();
+            fetchTasks();
+            fetchCron();
+        }
+        
+        // Initial load
+        fetchBusinesses();
+        fetchActivity();
+        fetchStats();
+        
+        // Load agent ops data too
+        initAgentOps();
+
+        // Add touch handlers for mobile - prevent scroll from triggering click
+        document.querySelectorAll('.business-row[data-business]').forEach(row => {
+            let touchStartY = 0;
+            let touchStartX = 0;
+            let touchStartTime = 0;
+            
+            row.addEventListener('touchstart', function(e) {
+                touchStartY = e.touches[0].clientY;
+                touchStartX = e.touches[0].clientX;
+                touchStartTime = Date.now();
+            }, { passive: true });
+            
+            row.addEventListener('touchend', function(e) {
+                const touchEndY = e.changedTouches[0].clientY;
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchDuration = Date.now() - touchStartTime;
+                
+                const deltaY = Math.abs(touchEndY - touchStartY);
+                const deltaX = Math.abs(touchEndX - touchStartX);
+                
+                // Only trigger if it's a tap (minimal movement, quick touch)
+                if (deltaY < 15 && deltaX < 15 && touchDuration < 300) {
+                    const bizId = this.dataset.business;
+                    if (bizId) showBusinessDetail(bizId);
+                }
+            }, { passive: true });
+        });
+
+        // Refresh every 2 minutes
+        setInterval(() => {
+            fetchBusinesses();
+            fetchActivity();
+            fetchStats();
+        }, 120000);
+
+        // ============================================
+        // AGENT MODAL SYSTEM
+        // ============================================
+        
+        const agentModal = document.getElementById('agentModal');
+        const agentModalClose = document.getElementById('agentModalClose');
+        const agentTaskInput = document.getElementById('agentTaskInput');
+        const sendAgentTaskBtn = document.getElementById('sendAgentTask');
+        
+        let currentAgent = null;
+        let agentTaskHistoryData = {};
+        
+        // Open agent modal
+        function openAgentModal(agent) {
+            currentAgent = agent;
+            
+            document.getElementById('modalAgentAvatar').src = agent.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${agent.name}`;
+            document.getElementById('modalAgentName').textContent = agent.name;
+            document.getElementById('modalAgentRole').textContent = `${agent.role || 'Agent'} • ${agent.specialty || 'General'}`;
+            
+            // Update current task status
+            const taskDiv = document.getElementById('agentCurrentTask');
+            if (agent.status === 'active' && agent.current_task) {
+                taskDiv.classList.remove('idle');
+                taskDiv.innerHTML = `
+                    <div class="task-label">🔄 Working on:</div>
+                    <div>${agent.current_task}</div>
+                `;
+            } else {
+                taskDiv.classList.add('idle');
+                taskDiv.textContent = agent.status === 'idle' ? 'Idle - ready for tasks' : 'No active task';
+            }
+            
+            // Load task history
+            const historyDiv = document.getElementById('agentTaskHistory');
+            const history = agentTaskHistoryData[agent.id] || [];
+            if (history.length > 0) {
+                historyDiv.innerHTML = history.slice(0, 5).map(task => `
+                    <div class="agent-history-item">
+                        <div class="task-text">${task.text}</div>
+                        <div class="task-meta">${task.status} • ${timeAgo(task.time)}</div>
+                    </div>
+                `).join('');
+            } else {
+                historyDiv.innerHTML = '<div class="text-secondary" style="font-size: 0.85rem;">No recent tasks</div>';
+            }
+            
+            agentModal.classList.add('active');
+            setTimeout(() => agentTaskInput.focus(), 200);
+        }
+        
+        // Close agent modal
+        function closeAgentModal() {
+            agentModal.classList.remove('active');
+            currentAgent = null;
+            agentTaskInput.value = '';
+        }
+        
+        // Send task to agent
+        async function sendAgentTask() {
+            if (!currentAgent || !agentTaskInput.value.trim()) return;
+            
+            const task = agentTaskInput.value.trim();
+            const agentId = currentAgent.id;
+            
+            sendAgentTaskBtn.disabled = true;
+            sendAgentTaskBtn.textContent = 'Sending...';
+            
+            try {
+                // Queue the command through Mission Control API
+                const res = await fetch(`${API_BASE}/api/commands`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'spawn',
+                        agent: agentId,
+                        task: task
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.ok) {
+                    // Add to local history
+                    if (!agentTaskHistoryData[agentId]) {
+                        agentTaskHistoryData[agentId] = [];
+                    }
+                    agentTaskHistoryData[agentId].unshift({
+                        text: task,
+                        status: 'queued',
+                        time: new Date().toISOString()
+                    });
+                    
+                    // Show success
+                    agentTaskInput.value = '';
+                    sendAgentTaskBtn.textContent = '✓ Queued!';
+                    
+                    // Update history display
+                    const historyDiv = document.getElementById('agentTaskHistory');
+                    historyDiv.innerHTML = agentTaskHistoryData[agentId].slice(0, 5).map(t => `
+                        <div class="agent-history-item">
+                            <div class="task-text">${t.text}</div>
+                            <div class="task-meta">${t.status} • ${timeAgo(t.time)}</div>
+                        </div>
+                    `).join('');
+                    
+                    setTimeout(() => {
+                        sendAgentTaskBtn.textContent = 'Send';
+                        sendAgentTaskBtn.disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || 'Failed to queue task');
+                }
+            } catch (err) {
+                console.error('Error sending task:', err);
+                sendAgentTaskBtn.textContent = 'Error';
+                setTimeout(() => {
+                    sendAgentTaskBtn.textContent = 'Send';
+                    sendAgentTaskBtn.disabled = false;
+                }, 2000);
+            }
+        }
+        
+        // Event listeners for agent modal
+        agentModalClose?.addEventListener('click', closeAgentModal);
+        agentModal?.addEventListener('click', (e) => {
+            if (e.target === agentModal) closeAgentModal();
+        });
+        sendAgentTaskBtn?.addEventListener('click', sendAgentTask);
+        agentTaskInput?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendAgentTask();
+        });
+        
+        // Make agent cards clickable
+        document.addEventListener('click', (e) => {
+            const card = e.target.closest('.agent-card[data-agent]');
+            if (card) {
+                const agentId = card.dataset.agent;
+                // Find agent data
+                fetch(`${API_BASE}/api/agents`)
+                    .then(res => res.json())
+                    .then(agents => {
+                        const agent = agents.find(a => a.id === agentId);
+                        if (agent) openAgentModal(agent);
+                    });
+            }
+        });
+        
+        // Escape key closes modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && agentModal?.classList.contains('active')) {
+                closeAgentModal();
+            }
+        });
     </script>
 </body>
 </html>

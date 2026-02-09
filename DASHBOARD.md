@@ -1,5 +1,5 @@
 # COMMAND CENTER DASHBOARD
-*Last Updated: 2026-02-06 22:30 PST*
+*Last Updated: 2026-02-07 15:40 PST*
 
 ---
 
@@ -10,8 +10,11 @@
 | CONDUIT | TESTING | $0 | $0 | N/A | 🟡 Warming | NO | NO |
 | TRADECRAFT | TESTING | $0 | $0 | N/A | 🟢 Ready | NO | NO |
 | LIFTEDPICK | TESTING | $0 | $0 | 100% | 🟢 Live | NO | NO |
+| ATLAS_DIGITAL | ON HOLD | $0 | $0 | N/A | ⏸️ Paused | NO | NO |
+| ARBITER_SUPPLY | LAUNCHING | $0 | $0 | N/A | 🚀 Starting | NO | NO |
+| PENCILED | BUILDING | $0 | $0 | N/A | 🔨 Building | NO | NO |
 
-**Legend:** 🟢 Operational | 🟡 Setup/Waiting | 🔴 Error/Paused
+**Legend:** 🟢 Operational | 🟡 Setup/Waiting | 🔴 Error/Paused | ⏸️ On Hold | 🚀 Launching
 
 ---
 
@@ -127,6 +130,103 @@
 
 ---
 
+### ATLAS_DIGITAL
+| Field | Value |
+|-------|-------|
+| Business_ID | ATLAS_DIGITAL |
+| Business_Type | SaaS / Content Empire |
+| Status | **ON HOLD** ⏸️ |
+| NorthStarKPI | Organic Traffic |
+| Health | ⏸️ Shelved |
+
+**Concept:** AI-powered programmatic SEO. Autonomous agents build, rank, and monetize content at scale.
+
+**Why On Hold:** Significant setup time before revenue. Shelved Feb 7, 2026 to focus on Conduit.
+
+**Assets Pending:**
+- Blueprint PDF (in email)
+- Agent Prompts JSON (in email)
+
+**Trademark Status:** ⚠️ Not verified — need USPTO search for "Atlas Digital"
+
+**Human_Approvals_Needed:** NO (on hold)
+
+---
+
+### ARBITER_SUPPLY
+| Field | Value |
+|-------|-------|
+| Business_ID | ARBITER_SUPPLY |
+| Business_Type | E-Commerce / Dropship |
+| Status | **LAUNCHING** 🚀 |
+| NorthStarKPI | Monthly Profit |
+| Health | 🚀 Setup in progress |
+
+**Model:** AI-powered dropship arbitrage. Pure dropship (no inventory).
+
+**KPIs_Target**
+| Products Tested/Mo | Win Rate | Gross Margin | MRR (Month 3) |
+|--------------------|----------|--------------|---------------|
+| 30+ | 10%+ | 30-45% | $5K+ |
+
+**Budget_Caps**
+| Monthly Burn | Test Budget/Product | Max Landed Cost |
+|--------------|--------------------|-----------------| 
+| $340-640 | $150 | $50 |
+
+**Domain Options (Available)**
+- arbitersupply.com ✅
+- vantagedrop.com ✅
+- vantagearbiter.com ✅
+
+**Next Steps:**
+1. Anthony: Pick name & register domain
+2. Anthony: Create Amazon Seller account
+3. Rex: Begin product research
+
+**Human_Approvals_Needed:** YES (name selection, account creation)
+
+---
+
+### PENCILED
+| Field | Value |
+|-------|-------|
+| Business_ID | PENCILED |
+| Business_Type | Vertical AI SaaS |
+| Status | **BUILDING** 🔨 |
+| NorthStarKPI | MRR |
+| Health | 🔨 Development starting |
+
+**Concept:** AI bookkeeper for contractors. "Know if your jobs pencil out."
+
+**Target Customer:** Contractors ($300K-3M revenue), 1-15 employees
+
+**KPIs_Target**
+| Beta Users | Paid Conversion | MRR (Month 3) | Churn |
+|------------|-----------------|---------------|-------|
+| 10+ | 50%+ | $1K+ | <10% |
+
+**Pricing (Target)**
+| Tier | Price | Limit |
+|------|-------|-------|
+| Starter | $99/mo | Up to $30K/mo revenue |
+| Pro | $179/mo | Up to $150K/mo revenue |
+| Business | $299/mo | Unlimited |
+
+**Domain:** penciled.co ✅ (available)
+
+**Core MVP Features:**
+1. Receipt snap → OCR → auto-categorize → assign to job
+2. Job tracking with costs vs estimates
+3. Job P&L reports
+4. Bank connection (Plaid)
+
+**Roadmap:** `projects/penciled/ROADMAP.md`
+
+**Human_Approvals_Needed:** YES (domain registration)
+
+---
+
 ## SECTION 3 — TODAY'S PRIORITIES
 
 | # | Business_ID | Task | Agent | Impact | Approval | Command |
@@ -155,6 +255,8 @@
 
 | Timestamp | Business_ID | Agent | Action | Reason | Result | Log_ID |
 |-----------|-------------|-------|--------|--------|--------|--------|
+| 2026-02-07 15:50 | ARBITER_SUPPLY | George | Business launched | Dropship arbitrage approved | 🚀 Starting | LOG_006 |
+| 2026-02-07 15:40 | ATLAS_DIGITAL | George | Business added (ON HOLD) | AI programmatic SEO concept | ✅ Shelved | LOG_005 |
 | 2026-02-06 22:30 | ALL | George | Dashboard initialized | New system | ✅ Success | LOG_001 |
 | 2026-02-06 22:19 | ALL | George | Command Center deployed | Architecture spec | ✅ Success | LOG_002 |
 | 2026-02-06 19:30 | CONDUIT | George | Email warmup enabled | Instantly setup | ✅ Success | LOG_003 |

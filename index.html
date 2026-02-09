@@ -3260,28 +3260,33 @@
         
         // Initialize chat
         async function initChat() {
-            // Load message history from API
+            // Always fetch fresh from API - server is source of truth
             try {
                 const res = await fetch(`${MC_API}/api/messages/history?limit=50`);
                 const serverMessages = await res.json();
                 
-                // Merge server messages with local (dedupe by id)
-                const localIds = new Set(chatHistory.map(m => m.id).filter(Boolean));
-                const newMessages = serverMessages.filter(m => !localIds.has(m.id));
-                
-                if (newMessages.length > 0) {
-                    // Convert server message format to chat format
-                    newMessages.forEach(m => {
-                        chatHistory.push({
-                            id: m.id,
-                            sender: m.from === 'Anthony' ? 'user' : 'george',
-                            text: m.text,
-                            time: m.created_at,
-                            status: m.status
-                        });
+                // Build a map of server message IDs
+                const serverById = new Map();
+                serverMessages.forEach(m => {
+                    serverById.set(m.id, {
+                        id: m.id,
+                        sender: m.from === 'Anthony' ? 'user' : 'george',
+                        text: m.text,
+                        time: m.created_at,
+                        status: m.status
                     });
-                    saveChatHistory();
-                }
+                });
+                
+                // Keep local messages that aren't on server (recent sends)
+                const localOnly = chatHistory.filter(m => m.id && !serverById.has(m.id));
+                
+                // Rebuild chatHistory: server messages + local-only
+                chatHistory = [...serverById.values(), ...localOnly];
+                
+                // Sort by time
+                chatHistory.sort((a, b) => new Date(a.time) - new Date(b.time));
+                
+                saveChatHistory();
             } catch (e) {
                 console.log('Could not fetch messages:', e);
             }
@@ -3308,10 +3313,10 @@
                 const serverMessages = await res.json();
                 
                 let updated = false;
-                const localIds = new Set(chatHistory.map(m => m.id).filter(Boolean));
+                const localById = new Map(chatHistory.filter(m => m.id).map(m => [m.id, m]));
                 
                 serverMessages.forEach(sm => {
-                    const local = chatHistory.find(m => m.id === sm.id);
+                    const local = localById.get(sm.id);
                     
                     if (local) {
                         // Update status of existing messages
@@ -3319,7 +3324,7 @@
                             local.status = sm.status;
                             updated = true;
                         }
-                    } else if (!localIds.has(sm.id)) {
+                    } else {
                         // Add new messages (including from George)
                         chatHistory.push({
                             id: sm.id,

@@ -5,99 +5,84 @@
 | Field | Value |
 |-------|-------|
 | Business_ID | TRADECRAFT |
-| Business_Type | Other (Algorithmic Trading) |
+| Business_Type | Algorithmic Trading |
 | Owner | Anthony Ferro |
 | Risk_Level | High |
-| Status | Active |
+| Status | **LIVE (Paper)** |
 
 ## Description
-Automated options trading system using Opening Range Breakout (ORB) strategy with 0DTE SPX options.
+Multi-strategy automated trading system running two independent bots:
+1. **SPY Blended Bot** - Mean Reversion + Credit Spreads on SPY
+2. **Tech Momentum Bot** - Breakout trading on TSLA, MSFT, NVDA, AAPL
 
-## Assets
-| Asset | Location |
-|-------|----------|
-| Codebase | `/projects/alpaca-trading-bot/` |
-| Main Script | `alpaca_orb_bot.py` |
-| Config | `config.py` |
+## Active Bots
+
+### SPY Blended Bot (Account 1)
+| Field | Value |
+|-------|-------|
+| Location | `/projects/alpaca-trading-bot/main_blended.py` |
+| PID | 62297 |
+| Capital | $100,000 (paper) |
+| Strategy | 60/30/10 - Mean Reversion / Credit Spreads / Cash |
+| API Key | PK64FBIDPV3O2DZIL7ZQI4GLHC |
+
+### Tech Momentum Bot (Account 2)
+| Field | Value |
+|-------|-------|
+| Location | `/projects/tech-momentum-bot/main.py` |
+| PID | 65416 |
+| Capital | $100,000 (paper) |
+| Symbols | TSLA, MSFT, NVDA, AAPL |
+| Strategy | 15-min breakout + RSI + VWAP + volume |
+| API Key | PKVZUGAAVWEDYXRO2J7SNE7ZFK |
 
 ## Accounts
-| Service | Purpose |
-|---------|---------|
-| Alpaca | Paper trading (transitioning to live) |
+| Account | Email | Purpose |
+|---------|-------|---------|
+| Alpaca #1 | (original) | SPY Blended Bot |
+| Alpaca #2 | anthony@hardhatledger.com | Tech Momentum Bot |
 
 ## KPIs
 | Metric | Target | Current |
 |--------|--------|---------|
 | Win Rate | >55% | Tracking |
-| Daily P&L | +$200 | Tracking |
-| Max Drawdown | <$2,000 | Enforced |
-| Sharpe Ratio | >1.5 | Tracking |
+| Monthly Return | 8-11% | Tracking |
+| Max Drawdown | <$2,000/day | Enforced |
+| Blended Win Rate | ~65% | Tracking |
 
 ## Risk Parameters
-| Parameter | Value |
-|-----------|-------|
-| Max Risk Per Trade | $10,000 |
-| Max Trades/Day | 4 |
-| Daily Loss Limit | $2,000 (HARD STOP) |
-| Account Balance | $100,000 (paper) |
+| Parameter | SPY Bot | Tech Bot |
+|-----------|---------|----------|
+| Max Daily Drawdown | 2% ($2K) | 2% ($2K) |
+| Emergency Stop | $5K | $5K |
+| Max Concurrent Positions | 10 | 2 |
+| Max VIX | 30 | 30 |
+
+## Key Rules
+- **DAY TRADES ONLY** - All positions flat by 3:55 PM ET
+- **No overnight holds** - Anthony's firm requirement
+- **IEX data feed** - Free tier Alpaca (no SIP)
+- **Paper trading** - Until human approval for live
 
 ## Budget Caps
-| Category | Limit | Period |
-|----------|-------|--------|
-| Max Daily Loss | $2,000 | Daily |
-| Max Position Size | $10,000 | Per trade |
+| Category | Limit |
+|----------|-------|
+| Max Daily Loss (per bot) | $2,000 |
+| Max Position Size | $10,000 |
+| Emergency Stop (per bot) | $5,000 |
 
 ---
 
-## AGENT CLUSTER
-
-### 1. STRATEGY AGENT
-**Role:** Define trading strategy, set risk parameters
-**Permissions:** Read-only access to performance data
-**Outputs:** Weekly performance review, strategy adjustments
-
-### 2. RESEARCH AGENT
-**Role:** Backtest strategies, analyze market conditions
-**Permissions:** Historical data access, no live trading
-**Outputs:** Backtest reports, market regime analysis
-
-### 3. EXECUTION AGENT
-**Role:** Execute approved trades via Alpaca API
-**Permissions:** Place orders within risk limits
-**Constraints:** 
-- Must respect daily loss limit
-- Must respect max trades/day
-- No manual overrides without approval
-**Outputs:** Trade logs, execution confirmations
-
-### 4. PRICING/OPTIMIZATION AGENT
-**Role:** Optimize entry/exit timing, position sizing
-**Permissions:** Adjust parameters within bands
-**Constraints:** Cannot exceed risk limits
-**Outputs:** Parameter optimization reports
-
-### 5. ADS/GROWTH AGENT
-**Role:** N/A for this business
-**Status:** Disabled
-
-### 6. SUPPORT/OPERATIONS AGENT
-**Role:** Monitor bot health, alert on errors
-**Permissions:** Restart bot, send notifications
-**Constraints:** Cannot modify trading parameters
-**Outputs:** Health logs, error alerts
-
----
+## Mission Control Integration
+- **Activity Feed**: Bots post status to `/api/activity`
+- **Status Reporting**: Startup/shutdown notifications
+- **Health Checks**: `scripts/check-bots.sh`
 
 ## Guardrails
 - **HARD STOP:** Bot pauses if daily loss hits $2,000
 - **NO** live trading without explicit human approval
-- **NO** margin/leverage beyond account equity
-- Trade notifications to Telegram (6711228839) — PENDING IMPLEMENTATION
+- **NO** overnight positions
+- Trade notifications to Telegram (6711228839)
 
-## Safety Rules
-| Trigger | Action |
-|---------|--------|
-| Daily loss limit hit | Pause trading for day |
-| API error | Pause bot, notify Anthony |
-| Unusual market volatility | Reduce position size 50% |
-| 3 consecutive losses | Pause, await human review |
+## Last Updated
+2026-02-11 23:00 PST

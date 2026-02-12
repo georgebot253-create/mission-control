@@ -1,5 +1,5 @@
 # COMMAND CENTER DASHBOARD
-*Last Updated: 2026-02-07 15:40 PST*
+*Last Updated: 2026-02-11 23:00 PST*
 
 ---
 
@@ -7,12 +7,12 @@
 
 | Business_ID | Status | Profit_24h | Spend_24h | ROAS/Margin | Health | Alerts | Approval |
 |-------------|--------|------------|-----------|-------------|--------|--------|----------|
-| CONDUIT | TESTING | $0 | $0 | N/A | 🟡 Warming | NO | NO |
-| TRADECRAFT | TESTING | $0 | $0 | N/A | 🟢 Ready | NO | NO |
-| LIFTEDPICK | TESTING | $0 | $0 | 100% | 🟢 Live | NO | NO |
+| TRADECRAFT | LIVE | Paper | $0 | N/A | 🟢 2 Bots Running | NO | NO |
+| HARDHAT_LEDGER | LIVE | $0 | $0 | 0.5% fee | 🟢 MVP Live | NO | NO |
+| LIFTEDPICK | LIVE | $0 | $0 | N/A | 🟢 Testing | NO | NO |
+| CONDUIT | WARMUP | $0 | $0 | N/A | 🟡 Email Warming | NO | NO |
 | ATLAS_DIGITAL | ON HOLD | $0 | $0 | N/A | ⏸️ Paused | NO | NO |
-| ARBITER_SUPPLY | LAUNCHING | $0 | $0 | N/A | 🚀 Starting | NO | NO |
-| PENCILED | BUILDING | $0 | $0 | N/A | 🔨 Building | NO | NO |
+| ARBITER_SUPPLY | ON HOLD | $0 | $0 | N/A | ⏸️ Paused | NO | NO |
 
 **Legend:** 🟢 Operational | 🟡 Setup/Waiting | 🔴 Error/Paused | ⏸️ On Hold | 🚀 Launching
 
@@ -62,33 +62,27 @@
 |-------|-------|
 | Business_ID | TRADECRAFT |
 | Business_Type | Algorithmic Trading |
-| Status | TESTING |
+| Status | **LIVE (Paper)** |
 | NorthStarKPI | Daily P&L |
-| Health | 🟢 Ready for market open |
+| Health | 🟢 Both bots running |
 
-**KPIs_24h**
-| Revenue | Profit | Spend | Win Rate | Trades |
-|---------|--------|-------|----------|--------|
-| $0 | $0 | $0 | N/A | 0 |
+**Active Bots:**
 
-**KPIs_7d**
-| Revenue | Profit | Spend | Win Rate | Trades |
-|---------|--------|-------|----------|--------|
-| $0 | $0 | $0 | N/A | 0 |
+| Bot | Strategy | Account | Capital | PID | Status |
+|-----|----------|---------|---------|-----|--------|
+| SPY Blended | Mean Reversion + Credit Spreads | Account 1 | $100K | 62297 | 🟢 Running |
+| Tech Momentum | TSLA/MSFT/NVDA/AAPL Breakouts | Account 2 | $100K | 65416 | 🟢 Running |
 
 **Budget_Caps**
-| daily_loss_limit | max_per_trade | max_trades_day |
-|------------------|---------------|----------------|
-| $2,000 | $10,000 | 4 |
+| daily_loss_limit | max_per_trade | allocation |
+|------------------|---------------|------------|
+| $2,000 per bot | $10,000 | 60/30/10 (SPY) |
 
 **Guardrails**
-- HARD STOP at $2k daily loss
-- Paper trading only until approval
-- 3 consecutive losses → pause
-
-**Top_Risks**
-1. Market volatility
-2. API connectivity
+- HARD STOP at $2k daily loss per bot
+- Day trades only - flat by 3:55 PM ET
+- IEX data feed (free tier Alpaca)
+- No overnight positions
 
 **Human_Approvals_Needed:** NO
 
@@ -125,6 +119,51 @@
 **Top_Risks**
 1. Adoption by staff
 2. Scanner hardware needed
+
+**Human_Approvals_Needed:** NO
+
+---
+
+### HARDHAT_LEDGER
+| Field | Value |
+|-------|-------|
+| Business_ID | HARDHAT_LEDGER |
+| Business_Type | Vertical SaaS |
+| Status | **MVP LIVE** 🚀 |
+| NorthStarKPI | MRR + Platform Fee Revenue |
+| Health | 🟢 Production live |
+| Website | hardhatledger.com |
+| Launched | Feb 9, 2026 |
+
+**Pricing Tiers**
+| Tier | Price | Features |
+|------|-------|----------|
+| Free | $0/mo | Basic features |
+| Pro | $29/mo | Full features |
+| Business | $79/mo | Multi-user |
+
+**Revenue Model**
+- Subscription: $29-79/mo
+- Platform Fee: 0.5% on invoiced payments (Stripe Connect)
+
+**Features Live:**
+- ✅ Receipt OCR scanning
+- ✅ Job costing & P&L
+- ✅ Invoice generation with Stripe payments
+- ✅ Bid creation with calculator
+- ✅ Mileage & time tracking
+- ✅ Client CRM
+- ✅ Mobile app (Android APK)
+
+**Tech Stack:**
+- Next.js (Landing/Web)
+- React Native + Expo (Mobile)
+- Supabase (Database)
+- Stripe Connect (Payments)
+- Resend (Email)
+- TaxJar (Tax rates)
+
+**Promo Code:** BETATESTER (12 uses, first-time)
 
 **Human_Approvals_Needed:** NO
 

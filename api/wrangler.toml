@@ -1,0 +1,10 @@
+name = "mission-control-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+SYNC_TOKEN = "mc-sync-2026"
+
+[[kv_namespaces]]
+binding = "MISSION_CONTROL"
+id = "fa5c0c3d4d9b4f4abd9a6445c1259679"

@@ -426,15 +426,68 @@ export default {
     }
 
     // ============================================
+    // BOT STATUS ENDPOINTS
+    // ============================================
+    
+    // Get all bot statuses
+    if (url.pathname === '/api/bots' && request.method === 'GET') {
+      const data = await env.MISSION_CONTROL.get('bot_status', 'json') || {};
+      return Response.json(data, { headers: corsHeaders });
+    }
+    
+    // Update bot status (called by bots on startup/shutdown)
+    if (url.pathname === '/api/bots' && request.method === 'POST') {
+      const body = await request.json();
+      
+      const existing = await env.MISSION_CONTROL.get('bot_status', 'json') || {};
+      
+      existing[body.bot_id] = {
+        name: body.name,
+        status: body.status, // running, stopped, error
+        pid: body.pid,
+        account: body.account,
+        strategy: body.strategy,
+        capital: body.capital,
+        symbols: body.symbols,
+        pnl_today: body.pnl_today || 0,
+        trades_today: body.trades_today || 0,
+        last_heartbeat: new Date().toISOString(),
+        meta: body.meta || {}
+      };
+      
+      await env.MISSION_CONTROL.put('bot_status', JSON.stringify(existing));
+      
+      return Response.json({ ok: true, bot_id: body.bot_id }, { headers: corsHeaders });
+    }
+    
+    // Bot heartbeat (lightweight status update)
+    if (url.pathname === '/api/bots/heartbeat' && request.method === 'POST') {
+      const body = await request.json();
+      
+      const existing = await env.MISSION_CONTROL.get('bot_status', 'json') || {};
+      
+      if (existing[body.bot_id]) {
+        existing[body.bot_id].last_heartbeat = new Date().toISOString();
+        existing[body.bot_id].pnl_today = body.pnl_today || existing[body.bot_id].pnl_today;
+        existing[body.bot_id].trades_today = body.trades_today || existing[body.bot_id].trades_today;
+        existing[body.bot_id].status = body.status || existing[body.bot_id].status;
+        
+        await env.MISSION_CONTROL.put('bot_status', JSON.stringify(existing));
+      }
+      
+      return Response.json({ ok: true }, { headers: corsHeaders });
+    }
+
+    // ============================================
     // HEALTH CHECK
     // ============================================
     
     if (url.pathname === '/api/health') {
       return Response.json({ 
         status: 'ok', 
-        version: '2.1',
+        version: '2.2',
         timestamp: new Date().toISOString(),
-        features: ['businesses', 'agents', 'sessions', 'tasks', 'cron', 'metrics', 'commands', 'messages']
+        features: ['businesses', 'agents', 'sessions', 'tasks', 'cron', 'metrics', 'commands', 'messages', 'bots']
       }, { headers: corsHeaders });
     }
 

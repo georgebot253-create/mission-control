@@ -4306,6 +4306,47 @@
                 console.warn('Could not fetch TradeCraft data:', err);
             }
         }
+        
+        // ============================================
+        // BOT STATUS REFRESH
+        // ============================================
+        
+        async function fetchBotStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/api/bots`);
+                const bots = await res.json();
+                
+                // Update SPY Blended Bot
+                if (bots.spy_blended) {
+                    const spy = bots.spy_blended;
+                    const spyStatus = document.getElementById('spyBotStatus');
+                    const spyPid = document.getElementById('spyBotPid');
+                    
+                    if (spyStatus) {
+                        const isRecent = (Date.now() - new Date(spy.last_heartbeat).getTime()) < 300000; // 5 min
+                        spyStatus.textContent = isRecent ? spy.status.charAt(0).toUpperCase() + spy.status.slice(1) : 'Offline';
+                        spyStatus.className = `badge ${isRecent && spy.status === 'running' ? 'bg-success' : 'bg-danger'}`;
+                    }
+                    if (spyPid) spyPid.textContent = `PID: ${spy.pid}`;
+                }
+                
+                // Update Tech Momentum Bot
+                if (bots.tech_momentum) {
+                    const tech = bots.tech_momentum;
+                    const techStatus = document.getElementById('techBotStatus');
+                    const techPid = document.getElementById('techBotPid');
+                    
+                    if (techStatus) {
+                        const isRecent = (Date.now() - new Date(tech.last_heartbeat).getTime()) < 300000;
+                        techStatus.textContent = isRecent ? tech.status.charAt(0).toUpperCase() + tech.status.slice(1) : 'Offline';
+                        techStatus.className = `badge ${isRecent && tech.status === 'running' ? 'bg-success' : 'bg-danger'}`;
+                    }
+                    if (techPid) techPid.textContent = `PID: ${tech.pid}`;
+                }
+            } catch (err) {
+                console.warn('Could not fetch bot status:', err);
+            }
+        }
 
         // ============================================
         // CONTROL PLANE (Phase 2)
@@ -4676,7 +4717,11 @@
             fetchActivity();
             fetchStats();
             fetchTradeCraftData();
+            fetchBotStatus();
         }, 30000);
+        
+        // Initial bot status fetch
+        fetchBotStatus();
 
         // ============================================
         // AGENT MODAL SYSTEM
